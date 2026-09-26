@@ -1,0 +1,173 @@
+object frmIbqServerRegistration: TfrmIbqServerRegistration
+  Left = 380
+  Height = 372
+  Top = 200
+  Width = 520
+  BorderStyle = bsDialog
+  Caption = 'Register Server'
+  ClientHeight = 372
+  ClientWidth = 520
+  OnCreate = FormCreate
+  Position = poMainFormCenter
+  LCLVersion = '3.0.0.0'
+  object lblName: TLabel
+    Left = 24
+    Height = 15
+    Top = 20
+    Width = 110
+    Caption = 'Display name'
+    ParentColor = False
+  end
+  object edtName: TEdit
+    Left = 150
+    Height = 23
+    Top = 16
+    Width = 340
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 0
+  end
+  object lblHost: TLabel
+    Left = 24
+    Height = 15
+    Top = 56
+    Width = 110
+    Caption = 'Host'
+    ParentColor = False
+  end
+  object edtHost: TEdit
+    Left = 150
+    Height = 23
+    Top = 52
+    Width = 340
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 1
+    Text = 'localhost'
+  end
+  object lblPort: TLabel
+    Left = 24
+    Height = 15
+    Top = 92
+    Width = 110
+    Caption = 'Port'
+    ParentColor = False
+  end
+  object edtPort: TEdit
+    Left = 150
+    Height = 23
+    Top = 88
+    Width = 90
+    TabOrder = 2
+    Text = '3050'
+  end
+  object lblUser: TLabel
+    Left = 24
+    Height = 15
+    Top = 128
+    Width = 110
+    Caption = 'Default user'
+    ParentColor = False
+  end
+  object edtUser: TEdit
+    Left = 150
+    Height = 23
+    Top = 124
+    Width = 340
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 3
+    Text = 'SYSDBA'
+  end
+  object lblDescription: TLabel
+    Left = 24
+    Height = 15
+    Top = 164
+    Width = 110
+    Caption = 'Description'
+    ParentColor = False
+  end
+  object edtDescription: TEdit
+    Left = 150
+    Height = 23
+    Top = 160
+    Width = 340
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 4
+  end
+  object lblClientLib: TLabel
+    Left = 24
+    Height = 15
+    Top = 204
+    Width = 110
+    Caption = 'Client library'
+    ParentColor = False
+  end
+  object cbxClientLib: TComboBox
+    Left = 150
+    Height = 23
+    Top = 200
+    Width = 244
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 15
+    OnChange = cbxClientLibChange
+    TabOrder = 5
+  end
+  object btnBrowseClient: TButton
+    Left = 402
+    Height = 25
+    Top = 199
+    Width = 88
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    Caption = 'Browse...'
+    OnClick = btnBrowseClientClick
+    TabOrder = 6
+  end
+  object lblClientInfo: TLabel
+    Left = 150
+    Height = 30
+    Top = 230
+    Width = 340
+    Anchors = [akTop, akLeft, akRight]
+    Caption = ' '
+    ParentColor = False
+    WordWrap = True
+  end
+  object bvlButtons: TBevel
+    Left = 0
+    Height = 3
+    Top = 300
+    Width = 520
+    Align = alBottom
+    Shape = bsTopLine
+  end
+  object btnOK: TButton
+    Left = 314
+    Height = 27
+    Top = 322
+    Width = 88
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    Caption = 'OK'
+    Default = True
+    OnClick = btnOKClick
+    TabOrder = 7
+  end
+  object btnCancel: TButton
+    Left = 410
+    Height = 27
+    Top = 322
+    Width = 88
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 8
+  end
+  object dlgOpenClient: TOpenDialog
+    Title = 'Select the Firebird client library'
+    Filter = 'Firebird client|fbclient.dll;libfbclient.so*|All files|*.*'
+    Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Left = 40
+    Top = 320
+  end
+end

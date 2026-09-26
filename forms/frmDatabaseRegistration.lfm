@@ -1,0 +1,250 @@
+object frmIbqDatabaseRegistration: TfrmIbqDatabaseRegistration
+  Left = 360
+  Height = 470
+  Top = 160
+  Width = 560
+  BorderStyle = bsDialog
+  Caption = 'Register Database'
+  ClientHeight = 470
+  ClientWidth = 560
+  OnCreate = FormCreate
+  Position = poMainFormCenter
+  LCLVersion = '3.0.0.0'
+  object lblName: TLabel
+    Left = 24
+    Height = 15
+    Top = 20
+    Width = 120
+    Caption = 'Display name'
+    ParentColor = False
+  end
+  object edtName: TEdit
+    Left = 160
+    Height = 23
+    Top = 16
+    Width = 370
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 0
+  end
+  object lblMode: TLabel
+    Left = 24
+    Height = 15
+    Top = 56
+    Width = 120
+    Caption = 'Connection'
+    ParentColor = False
+  end
+  object cbxMode: TComboBox
+    Left = 160
+    Height = 23
+    Top = 52
+    Width = 370
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 15
+    OnChange = cbxModeChange
+    ReadOnly = True
+    Style = csDropDownList
+    TabOrder = 1
+  end
+  object lblPath: TLabel
+    Left = 24
+    Height = 15
+    Top = 92
+    Width = 120
+    Caption = 'Database file'
+    ParentColor = False
+  end
+  object edtPath: TEdit
+    Left = 160
+    Height = 23
+    Top = 88
+    Width = 274
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 2
+  end
+  object btnBrowsePath: TButton
+    Left = 442
+    Height = 25
+    Top = 87
+    Width = 88
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    Caption = 'Browse...'
+    OnClick = btnBrowsePathClick
+    TabOrder = 3
+  end
+  object lblUser: TLabel
+    Left = 24
+    Height = 15
+    Top = 128
+    Width = 120
+    Caption = 'User name'
+    ParentColor = False
+  end
+  object edtUser: TEdit
+    Left = 160
+    Height = 23
+    Top = 124
+    Width = 200
+    TabOrder = 4
+    Text = 'SYSDBA'
+  end
+  object lblRole: TLabel
+    Left = 24
+    Height = 15
+    Top = 164
+    Width = 120
+    Caption = 'Role'
+    ParentColor = False
+  end
+  object edtRole: TEdit
+    Left = 160
+    Height = 23
+    Top = 160
+    Width = 200
+    TabOrder = 5
+  end
+  object chkRoleCaseSensitive: TCheckBox
+    Left = 372
+    Height = 19
+    Top = 162
+    Width = 105
+    Caption = 'Case sensitive'
+    TabOrder = 6
+  end
+  object lblCharset: TLabel
+    Left = 24
+    Height = 15
+    Top = 200
+    Width = 120
+    Caption = 'Character set'
+    ParentColor = False
+  end
+  object cbxCharset: TComboBox
+    Left = 160
+    Height = 23
+    Top = 196
+    Width = 200
+    ItemHeight = 15
+    TabOrder = 7
+    Text = 'UTF8'
+  end
+  object lblPageBuffers: TLabel
+    Left = 24
+    Height = 15
+    Top = 236
+    Width = 120
+    Caption = 'Page buffers'
+    ParentColor = False
+  end
+  object edtPageBuffers: TEdit
+    Left = 160
+    Height = 23
+    Top = 232
+    Width = 100
+    TabOrder = 8
+  end
+  object lblPasswordStorage: TLabel
+    Left = 24
+    Height = 15
+    Top = 272
+    Width = 120
+    Caption = 'Password'
+    ParentColor = False
+  end
+  object cbxPasswordStorage: TComboBox
+    Left = 160
+    Height = 23
+    Top = 268
+    Width = 370
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 15
+    ReadOnly = True
+    Style = csDropDownList
+    TabOrder = 9
+  end
+  object lblClientLib: TLabel
+    Left = 24
+    Height = 15
+    Top = 308
+    Width = 120
+    Caption = 'Client library'
+    ParentColor = False
+  end
+  object cbxClientLib: TComboBox
+    Left = 160
+    Height = 23
+    Top = 304
+    Width = 274
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 15
+    TabOrder = 10
+  end
+  object btnBrowseClient: TButton
+    Left = 442
+    Height = 25
+    Top = 303
+    Width = 88
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    Caption = 'Browse...'
+    OnClick = btnBrowseClientClick
+    TabOrder = 11
+  end
+  object lblHint: TLabel
+    Left = 24
+    Height = 60
+    Top = 344
+    Width = 506
+    Anchors = [akTop, akLeft, akRight]
+    Caption = ' '
+    ParentColor = False
+    WordWrap = True
+  end
+  object bvlButtons: TBevel
+    Left = 0
+    Height = 3
+    Top = 412
+    Width = 560
+    Align = alBottom
+    Shape = bsTopLine
+  end
+  object btnOK: TButton
+    Left = 354
+    Height = 27
+    Top = 430
+    Width = 88
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    Caption = 'OK'
+    Default = True
+    OnClick = btnOKClick
+    TabOrder = 12
+  end
+  object btnCancel: TButton
+    Left = 450
+    Height = 27
+    Top = 430
+    Width = 88
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 13
+  end
+  object dlgOpenDatabase: TOpenDialog
+    Title = 'Select the database file'
+    Filter = 'Firebird database|*.fdb;*.gdb;*.ib|All files|*.*'
+    Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Left = 40
+    Top = 428
+  end
+  object dlgOpenClient: TOpenDialog
+    Title = 'Select the Firebird client library'
+    Filter = 'Firebird client|fbclient.dll;libfbclient.so*|All files|*.*'
+    Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Left = 96
+    Top = 428
+  end
+end

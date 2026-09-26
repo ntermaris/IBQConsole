@@ -1,0 +1,284 @@
+object frmIbqTransactionRecovery: TfrmIbqTransactionRecovery
+  Left = 260
+  Height = 680
+  Top = 100
+  Width = 980
+  Caption = 'Transaction Recovery'
+  ClientHeight = 680
+  ClientWidth = 980
+  Constraints.MinHeight = 560
+  Constraints.MinWidth = 900
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  object pnlHeader: TPanel
+    Left = 0
+    Height = 76
+    Top = 0
+    Width = 980
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 76
+    ClientWidth = 980
+    TabOrder = 0
+    object lblServer: TLabel
+      Left = 12
+      Height = 15
+      Top = 12
+      Width = 40
+      Caption = 'Server'
+      ParentColor = False
+    end
+    object lblServerValue: TLabel
+      Left = 96
+      Height = 15
+      Top = 12
+      Width = 12
+      Caption = '-'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object lblDatabase: TLabel
+      Left = 380
+      Height = 15
+      Top = 12
+      Width = 53
+      Caption = 'Database'
+      ParentColor = False
+    end
+    object lblDatabaseValue: TLabel
+      Left = 452
+      Height = 15
+      Top = 12
+      Width = 12
+      Caption = '-'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object lblUser: TLabel
+      Left = 12
+      Height = 15
+      Top = 41
+      Width = 26
+      Caption = 'User'
+      ParentColor = False
+    end
+    object edtUser: TEdit
+      Left = 96
+      Height = 23
+      Top = 37
+      Width = 160
+      TabOrder = 0
+      Text = 'SYSDBA'
+    end
+    object lblPassword: TLabel
+      Left = 280
+      Height = 15
+      Top = 41
+      Width = 53
+      Caption = 'Password'
+      ParentColor = False
+    end
+    object edtPassword: TEdit
+      Left = 348
+      Height = 23
+      Top = 37
+      Width = 160
+      EchoMode = emPassword
+      PasswordChar = '*'
+      TabOrder = 1
+    end
+  end
+  object pnlActions: TPanel
+    Left = 0
+    Height = 40
+    Top = 76
+    Width = 980
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 40
+    ClientWidth = 980
+    TabOrder = 1
+    object lblSetAction: TLabel
+      Left = 12
+      Height = 15
+      Top = 12
+      Width = 160
+      Caption = 'For the selected transaction:'
+      ParentColor = False
+    end
+    object btnSetCommit: TButton
+      Left = 200
+      Height = 27
+      Top = 6
+      Width = 100
+      Caption = 'Commit'
+      OnClick = btnSetCommitClick
+      TabOrder = 0
+    end
+    object btnSetRollback: TButton
+      Left = 308
+      Height = 27
+      Top = 6
+      Width = 100
+      Caption = 'Roll back'
+      OnClick = btnSetRollbackClick
+      TabOrder = 1
+    end
+    object btnUseAdvice: TButton
+      Left = 416
+      Height = 27
+      Top = 6
+      Width = 160
+      Caption = 'Use recommendation'
+      OnClick = btnUseAdviceClick
+      TabOrder = 2
+    end
+    object lblAllOrNothing: TLabel
+      Left = 590
+      Height = 30
+      Top = 4
+      Width = 378
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'Applying resolves every transaction listed, and cannot be undone.'
+      Font.Color = clGrayText
+      ParentColor = False
+      ParentFont = False
+      WordWrap = True
+    end
+  end
+  object grdTransactions: TStringGrid
+    Left = 0
+    Height = 375
+    Top = 116
+    Width = 980
+    Align = alClient
+    ColCount = 8
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect, goThumbTracking, goSmoothScroll]
+    RowCount = 1
+    ScrollBars = ssAutoBoth
+    TabOrder = 2
+    OnSelection = grdTransactionsSelection
+    ColWidths = (
+      90
+      110
+      140
+      120
+      120
+      180
+      110
+      90
+    )
+  end
+  object splOutput: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 491
+    Width = 980
+    Align = alBottom
+    ResizeAnchor = akBottom
+  end
+  object pnlOutput: TPanel
+    Left = 0
+    Height = 140
+    Top = 496
+    Width = 980
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 140
+    ClientWidth = 980
+    TabOrder = 3
+    object lblOutput: TLabel
+      Left = 12
+      Height = 15
+      Top = 6
+      Width = 76
+      Caption = 'Server output'
+      ParentColor = False
+    end
+    object memOutput: TMemo
+      Left = 12
+      Height = 108
+      Top = 26
+      Width = 956
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      Font.Name = 'Courier New'
+      ParentFont = False
+      ReadOnly = True
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+      WordWrap = False
+    end
+  end
+  object pnlButtons: TPanel
+    Left = 0
+    Height = 44
+    Top = 636
+    Width = 980
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 44
+    ClientWidth = 980
+    TabOrder = 4
+    object lblStatus: TLabel
+      Left = 12
+      Height = 15
+      Top = 14
+      Width = 330
+      Caption = ''
+      ParentColor = False
+    end
+    object lblGlobal: TLabel
+      Left = 360
+      Height = 15
+      Top = 14
+      Width = 52
+      Caption = 'Decide by'
+      ParentColor = False
+    end
+    object cbxGlobalAction: TComboBox
+      Left = 424
+      Height = 23
+      Top = 10
+      Width = 260
+      ItemHeight = 15
+      Style = csDropDownList
+      OnChange = cbxGlobalActionChange
+      TabOrder = 0
+    end
+    object btnApply: TButton
+      Left = 696
+      Height = 27
+      Top = 8
+      Width = 90
+      Anchors = [akTop, akRight]
+      Caption = 'Apply'
+      OnClick = btnApplyClick
+      TabOrder = 1
+    end
+    object btnRefresh: TButton
+      Left = 794
+      Height = 27
+      Top = 8
+      Width = 90
+      Anchors = [akTop, akRight]
+      Caption = 'Refresh'
+      OnClick = btnRefreshClick
+      TabOrder = 2
+    end
+    object btnClose: TButton
+      Left = 892
+      Height = 27
+      Top = 8
+      Width = 76
+      Anchors = [akTop, akRight]
+      Cancel = True
+      Caption = 'Close'
+      ModalResult = 11
+      TabOrder = 3
+    end
+  end
+end

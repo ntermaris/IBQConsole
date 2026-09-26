@@ -1,0 +1,267 @@
+object fraSqlEditor: TfraSqlEditor
+  Left = 0
+  Height = 540
+  Top = 0
+  Width = 1100
+  ClientHeight = 540
+  ClientWidth = 1100
+  TabOrder = 0
+  object pnlToolbar: TPanel
+    Left = 0
+    Height = 39
+    Top = 0
+    Width = 1100
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 39
+    ClientWidth = 1100
+    TabOrder = 0
+    object btnExecute: TButton
+      Left = 8
+      Height = 27
+      Top = 6
+      Width = 118
+      Caption = 'Execute (F5)'
+      OnClick = btnExecuteClick
+      TabOrder = 0
+    end
+    object btnExecuteScript: TButton
+      Left = 132
+      Height = 27
+      Top = 6
+      Width = 118
+      Caption = 'Run script (F9)'
+      OnClick = btnExecuteScriptClick
+      TabOrder = 1
+    end
+    object btnCommit: TButton
+      Left = 264
+      Height = 27
+      Top = 6
+      Width = 118
+      Caption = 'Commit'
+      OnClick = btnCommitClick
+      TabOrder = 2
+    end
+    object btnRollback: TButton
+      Left = 388
+      Height = 27
+      Top = 6
+      Width = 118
+      Caption = 'Rollback'
+      OnClick = btnRollbackClick
+      TabOrder = 3
+    end
+    object btnHistory: TButton
+      Left = 520
+      Height = 27
+      Top = 6
+      Width = 118
+      Caption = 'History (Ctrl+H)'
+      OnClick = btnHistoryClick
+      TabOrder = 4
+    end
+    object btnOpen: TButton
+      Left = 652
+      Height = 27
+      Top = 6
+      Width = 118
+      Caption = 'Open...'
+      OnClick = btnOpenClick
+      TabOrder = 5
+    end
+    object btnSave: TButton
+      Left = 776
+      Height = 27
+      Top = 6
+      Width = 118
+      Caption = 'Save...'
+      OnClick = btnSaveClick
+      TabOrder = 6
+    end
+    object btnExport: TButton
+      Left = 900
+      Height = 27
+      Top = 6
+      Width = 118
+      Caption = 'Export...'
+      OnClick = btnExportClick
+      TabOrder = 7
+    end
+    object lblTransaction: TLabel
+      Left = 1030
+      Height = 15
+      Top = 12
+      Width = 60
+      Anchors = [akTop, akRight]
+      Caption = ' '
+      ParentColor = False
+    end
+  end
+  object pgcResults: TPageControl
+    Left = 0
+    Height = 240
+    Top = 300
+    Width = 1100
+    ActivePage = tabData
+    Align = alBottom
+    TabIndex = 0
+    object tabData: TTabSheet
+      Caption = 'Data'
+      ClientHeight = 212
+      ClientWidth = 1092
+      object grdResults: TStringGrid
+        Left = 0
+        Height = 212
+        Top = 0
+        Width = 1092
+        Align = alClient
+        FixedCols = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goThumbTracking, goSmoothScroll]
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+    end
+    object tabMessages: TTabSheet
+      Caption = 'Messages'
+      ClientHeight = 212
+      ClientWidth = 1092
+      object memMessages: TMemo
+        Left = 0
+        Height = 212
+        Top = 0
+        Width = 1092
+        Align = alClient
+        Font.Height = -12
+        Font.Name = 'Courier New'
+        ParentFont = False
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WordWrap = False
+      end
+    end
+    object tabPlan: TTabSheet
+      Caption = 'Plan'
+      ClientHeight = 212
+      ClientWidth = 1092
+      object memPlan: TMemo
+        Left = 0
+        Height = 212
+        Top = 0
+        Width = 1092
+        Align = alClient
+        Font.Height = -12
+        Font.Name = 'Courier New'
+        ParentFont = False
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WordWrap = False
+      end
+    end
+    object tabStatistics: TTabSheet
+      Caption = 'Statistics'
+      ClientHeight = 212
+      ClientWidth = 1092
+      object memStatistics: TMemo
+        Left = 0
+        Height = 212
+        Top = 0
+        Width = 1092
+        Align = alClient
+        Font.Height = -12
+        Font.Name = 'Courier New'
+        ParentFont = False
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WordWrap = False
+      end
+    end
+  end
+  object splResults: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 295
+    Width = 1100
+    Align = alBottom
+    ResizeAnchor = akBottom
+  end
+  object synEditor: TSynEdit
+    Left = 0
+    Height = 256
+    Top = 39
+    Width = 1100
+    Align = alClient
+    Font.Height = -13
+    Font.Name = 'Courier New'
+    Font.Pitch = fpFixed
+    Font.Quality = fqNonAntialiased
+    ParentColor = False
+    ParentFont = False
+    TabOrder = 1
+    OnKeyDown = synEditorKeyDown
+    Gutter.Width = 57
+    Gutter.MouseActions = <>
+    RightGutter.Width = 0
+    RightGutter.MouseActions = <>
+    Highlighter = synSqlHighlighter
+    Keystrokes = <>
+    MouseActions = <>
+    MouseTextActions = <>
+    MouseSelActions = <>
+    Lines.Strings = (
+      ''
+    )
+    VisibleSpecialChars = [vscSpace, vscTabAtLast]
+    SelectedColor.BackPriority = 50
+    SelectedColor.ForePriority = 50
+    SelectedColor.FramePriority = 50
+    SelectedColor.BoldPriority = 50
+    SelectedColor.ItalicPriority = 50
+    SelectedColor.UnderlinePriority = 50
+    SelectedColor.StrikeOutPriority = 50
+    BracketHighlightStyle = sbhsBoth
+    BracketMatchColor.Background = clNone
+    BracketMatchColor.Foreground = clNone
+    BracketMatchColor.Style = [fsBold]
+    FoldedCodeColor.Background = clNone
+    FoldedCodeColor.Foreground = clGray
+    FoldedCodeColor.FrameColor = clGray
+    MouseLinkColor.Background = clNone
+    MouseLinkColor.Foreground = clBlue
+    LineHighlightColor.Background = clNone
+    LineHighlightColor.Foreground = clNone
+  end
+  object synSqlHighlighter: TSynSQLSyn
+    Enabled = True
+    SQLDialect = sqlFirebird25
+    Left = 940
+    Top = 120
+  end
+  object dlgOpenScript: TOpenDialog
+    Title = 'Open script'
+    Filter = 'SQL scripts|*.sql;*.txt|All files|*.*'
+    Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Left = 940
+    Top = 180
+  end
+  object dlgSaveScript: TSaveDialog
+    Title = 'Save script'
+    DefaultExt = '.sql'
+    Filter = 'SQL scripts|*.sql;*.txt|All files|*.*'
+    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
+    Left = 940
+    Top = 240
+  end
+  object dlgExportResults: TSaveDialog
+    Title = 'Export results'
+    DefaultExt = '.csv'
+    Filter = 'CSV|*.csv|Tab separated|*.tsv|JSON|*.json|HTML|*.html|Markdown|*.md|INSERT statements|*.sql'
+    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
+    Left = 940
+    Top = 300
+  end
+end

@@ -1,0 +1,139 @@
+object frmIbqImportRegistrations: TfrmIbqImportRegistrations
+  Left = 280
+  Height = 560
+  Top = 130
+  Width = 900
+  Caption = 'Import Registrations'
+  ClientHeight = 560
+  ClientWidth = 900
+  Constraints.MinHeight = 420
+  Constraints.MinWidth = 760
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  object pnlHeader: TPanel
+    Left = 0
+    Height = 60
+    Top = 0
+    Width = 900
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 60
+    ClientWidth = 900
+    TabOrder = 0
+    object lblFound: TLabel
+      Left = 12
+      Height = 15
+      Top = 10
+      Width = 12
+      Caption = '-'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object lblSources: TLabel
+      Left = 12
+      Height = 30
+      Top = 28
+      Width = 876
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'Neither tool is changed, and passwords are never imported.'
+      Font.Color = clGrayText
+      ParentColor = False
+      ParentFont = False
+      WordWrap = True
+    end
+  end
+  object lvwCandidates: TListView
+    Left = 0
+    Height = 456
+    Top = 60
+    Width = 900
+    Align = alClient
+    Checkboxes = True
+    Columns = <
+      item
+        Caption = 'Found in'
+        Width = 90
+      end
+      item
+        Caption = 'Kind'
+        Width = 80
+      end
+      item
+        Caption = 'Name'
+        Width = 200
+      end
+      item
+        Caption = 'Address or path'
+        Width = 360
+      end
+      item
+        Caption = 'Status'
+        Width = 140
+      end>
+    ReadOnly = True
+    RowSelect = True
+    TabOrder = 1
+    ViewStyle = vsReport
+  end
+  object pnlButtons: TPanel
+    Left = 0
+    Height = 44
+    Top = 516
+    Width = 900
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 44
+    ClientWidth = 900
+    TabOrder = 2
+    object lblStatus: TLabel
+      Left = 12
+      Height = 15
+      Top = 14
+      Width = 300
+      Caption = ''
+      ParentColor = False
+    end
+    object btnAll: TButton
+      Left = 434
+      Height = 27
+      Top = 8
+      Width = 100
+      Anchors = [akTop, akRight]
+      Caption = 'Select all'
+      OnClick = btnAllClick
+      TabOrder = 0
+    end
+    object btnNone: TButton
+      Left = 542
+      Height = 27
+      Top = 8
+      Width = 100
+      Anchors = [akTop, akRight]
+      Caption = 'Select none'
+      OnClick = btnNoneClick
+      TabOrder = 1
+    end
+    object btnImport: TButton
+      Left = 650
+      Height = 27
+      Top = 8
+      Width = 100
+      Anchors = [akTop, akRight]
+      Caption = 'Import'
+      OnClick = btnImportClick
+      TabOrder = 2
+    end
+    object btnClose: TButton
+      Left = 758
+      Height = 27
+      Top = 8
+      Width = 130
+      Anchors = [akTop, akRight]
+      Cancel = True
+      Caption = 'Close'
+      ModalResult = 11
+      TabOrder = 3
+    end
+  end
+end

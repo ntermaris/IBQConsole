@@ -1,0 +1,424 @@
+﻿object frmIbqMain: TfrmIbqMain
+  Left = 240
+  Height = 640
+  Top = 130
+  Width = 1000
+  Caption = 'IBQConsole'
+  Menu = mnuMain
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '3.0.0.0'
+  object tvObjects: TTreeView
+    Left = 0
+    Height = 575
+    Top = 0
+    Width = 260
+    Align = alLeft
+    DefaultItemHeight = 20
+    ReadOnly = True
+    RightClickSelect = True
+    TabOrder = 0
+    OnExpanding = tvObjectsExpanding
+    OnSelectionChanged = tvObjectsSelectionChanged
+    OnDblClick = tvObjectsDblClick
+    PopupMenu = popTree
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+  end
+  object splTree: TSplitter
+    Left = 260
+    Height = 575
+    Top = 0
+    Width = 5
+  end
+  object stbMain: TStatusBar
+    Left = 0
+    Height = 21
+    Top = 619
+    Width = 1000
+    Panels = <
+      item
+        Text = 'Not connected'
+        Width = 320
+      end
+      item
+        Width = 220
+      end
+      item
+        Width = 220
+      end
+      item
+        Width = 120
+      end
+      item
+        Width = 100
+      end>
+    SimplePanel = False
+  end
+  object pnlLog: TPanel
+    Left = 265
+    Height = 130
+    Top = 489
+    Width = 735
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 130
+    ClientWidth = 735
+    TabOrder = 2
+    object memLog: TMemo
+      Left = 0
+      Height = 130
+      Top = 0
+      Width = 735
+      Align = alClient
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ParentFont = False
+      ReadOnly = True
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+      WordWrap = False
+    end
+  end
+  object splLog: TSplitter
+    Cursor = crVSplit
+    Left = 265
+    Height = 5
+    Top = 484
+    Width = 735
+    Align = alBottom
+    ResizeAnchor = akBottom
+  end
+  object pgcWorkspace: TPageControl
+    Left = 265
+    Height = 484
+    Top = 0
+    Width = 735
+    Align = alClient
+    TabOrder = 1
+  end
+  object mnuMain: TMainMenu
+    Left = 60
+    Top = 40
+    object mnuConsole: TMenuItem
+      Caption = '&Console'
+      object mnuRegisterServer: TMenuItem
+        Caption = 'Register &Server...'
+        OnClick = mnuRegisterServerClick
+      end
+      object mnuRegisterDatabase: TMenuItem
+        Caption = 'Register &Database...'
+        OnClick = mnuRegisterDatabaseClick
+      end
+      object mnuImportRegistrations: TMenuItem
+        Caption = 'Import Registrations...'
+        OnClick = mnuImportRegistrationsClick
+      end
+      object sepConsole1: TMenuItem
+        Caption = '-'
+      end
+      object mnuPreferences: TMenuItem
+        Caption = '&Preferences...'
+        OnClick = mnuPreferencesClick
+      end
+      object sepConsole2: TMenuItem
+        Caption = '-'
+      end
+      object mnuExit: TMenuItem
+        Caption = 'E&xit'
+        OnClick = mnuExitClick
+      end
+    end
+    object mnuView: TMenuItem
+      Caption = '&View'
+      object mnuRefresh: TMenuItem
+        Caption = '&Refresh'
+        ShortCut = 116
+        OnClick = mnuRefreshClick
+      end
+      object mnuShowSystem: TMenuItem
+        AutoCheck = True
+        Caption = 'Show &System Objects'
+        OnClick = mnuShowSystemClick
+      end
+      object mnuShowLog: TMenuItem
+        AutoCheck = True
+        Caption = 'Show &Log'
+        Checked = True
+        OnClick = mnuShowLogClick
+      end
+    end
+    object mnuServer: TMenuItem
+      Caption = '&Server'
+      object mnuServerConnect: TMenuItem
+        Caption = '&Connect'
+        OnClick = mnuNotImplementedClick
+      end
+      object mnuServerDisconnect: TMenuItem
+        Caption = '&Disconnect'
+        OnClick = mnuNotImplementedClick
+      end
+      object mnuServerProperties: TMenuItem
+        Caption = 'P&roperties...'
+        OnClick = mnuServerPropertiesClick
+      end
+      object mnuServerLog: TMenuItem
+        Caption = 'View &Log...'
+        OnClick = mnuServerLogClick
+      end
+      object mnuServerUsers: TMenuItem
+        Caption = '&Users...'
+        OnClick = mnuUsersClick
+      end
+      object mnuUnregisterServer: TMenuItem
+        Caption = '&Unregister'
+        OnClick = mnuUnregisterServerClick
+      end
+    end
+    object mnuDatabase: TMenuItem
+      Caption = '&Database'
+      object mnuDbConnect: TMenuItem
+        Caption = '&Connect'
+        OnClick = mnuDbConnectClick
+      end
+      object mnuDbDisconnect: TMenuItem
+        Caption = '&Disconnect'
+        OnClick = mnuDbDisconnectClick
+      end
+      object mnuUnregisterDatabase: TMenuItem
+        Caption = '&Unregister'
+        OnClick = mnuUnregisterDatabaseClick
+      end
+      object sepDatabase1: TMenuItem
+        Caption = '-'
+      end
+      object mnuMaintenance: TMenuItem
+        Caption = '&Maintenance'
+        object mnuBackup: TMenuItem
+          Caption = '&Backup...'
+          OnClick = mnuMaintenanceItemClick
+          Tag = 0
+        end
+        object mnuRestore: TMenuItem
+          Caption = '&Restore...'
+          OnClick = mnuMaintenanceItemClick
+          Tag = 1
+        end
+        object mnuValidate: TMenuItem
+          Caption = '&Validate...'
+          OnClick = mnuMaintenanceItemClick
+          Tag = 2
+        end
+        object mnuSweep: TMenuItem
+          Caption = '&Sweep...'
+          OnClick = mnuMaintenanceItemClick
+          Tag = 3
+        end
+        object mnuStatistics: TMenuItem
+          Caption = 'S&tatistics...'
+          OnClick = mnuMaintenanceItemClick
+          Tag = 4
+        end
+        object mnuTransactionRecovery: TMenuItem
+          Caption = 'T&ransaction Recovery...'
+          OnClick = mnuTransactionRecoveryClick
+        end
+        object mnuConnectedUsers: TMenuItem
+          Caption = '&Connected Users...'
+          OnClick = mnuConnectedUsersClick
+        end
+        object sepMaintenance1: TMenuItem
+          Caption = '-'
+        end
+        object mnuDbUsers: TMenuItem
+          Caption = '&Users...'
+          OnClick = mnuUsersClick
+        end
+        object mnuExtractMetadata: TMenuItem
+          Caption = 'E&xtract Metadata...'
+          OnClick = mnuExtractMetadataClick
+        end
+      end
+    end
+    object mnuObject: TMenuItem
+      Caption = '&Object'
+      object mnuObjRefresh: TMenuItem
+        Caption = 'Re&fresh'
+        OnClick = mnuNotImplementedClick
+      end
+      object mnuScriptAs: TMenuItem
+        Caption = '&Script as'
+      end
+      object mnuObjExecute: TMenuItem
+        Caption = '&Execute...'
+        OnClick = mnuObjExecuteClick
+      end
+      object mnuObjProperties: TMenuItem
+        Caption = 'P&roperties...'
+        OnClick = mnuObjPropertiesClick
+      end
+      object mnuObjDdlToEditor: TMenuItem
+        Caption = 'Open DDL in SQL &Editor'
+        OnClick = mnuObjDdlToEditorClick
+      end
+      object sepObject1: TMenuItem
+        Caption = '-'
+      end
+      object mnuObjNew: TMenuItem
+        Caption = '&New...'
+        OnClick = mnuObjNewClick
+      end
+      object mnuObjAlter: TMenuItem
+        Caption = '&Alter...'
+        OnClick = mnuObjAlterClick
+      end
+      object mnuObjDrop: TMenuItem
+        Caption = '&Drop...'
+        OnClick = mnuObjDropClick
+      end
+    end
+    object mnuTools: TMenuItem
+      Caption = '&Tools'
+      object mnuNewSqlEditor: TMenuItem
+        Caption = 'New &SQL Editor'
+        OnClick = mnuNewSqlEditorClick
+      end
+      object mnuLanguage: TMenuItem
+        Caption = '&Language'
+      end
+      object mnuOptions: TMenuItem
+        Caption = '&Options...'
+        OnClick = mnuPreferencesClick
+      end
+    end
+    object mnuHelp: TMenuItem
+      Caption = '&Help'
+      object mnuAbout: TMenuItem
+        Caption = '&About...'
+        OnClick = mnuAboutClick
+      end
+    end
+  end
+  object popTree: TPopupMenu
+    OnPopup = popTreePopup
+    object popConnect: TMenuItem
+      Caption = '&Connect'
+      OnClick = mnuDbConnectClick
+    end
+    object popDisconnect: TMenuItem
+      Caption = '&Disconnect'
+      OnClick = mnuDbDisconnectClick
+    end
+    object popSep1: TMenuItem
+      Caption = '-'
+    end
+    object popNew: TMenuItem
+      Caption = '&New...'
+      OnClick = mnuObjNewClick
+    end
+    object popAlter: TMenuItem
+      Caption = '&Alter...'
+      OnClick = mnuObjAlterClick
+    end
+    object popDrop: TMenuItem
+      Caption = 'Dr&op...'
+      OnClick = mnuObjDropClick
+    end
+    object popSep2: TMenuItem
+      Caption = '-'
+    end
+    object popProperties: TMenuItem
+      Caption = 'P&roperties...'
+      OnClick = mnuObjPropertiesClick
+    end
+    object popDdlToEditor: TMenuItem
+      Caption = 'Open DDL in SQL &Editor'
+      OnClick = mnuObjDdlToEditorClick
+    end
+    object popExecute: TMenuItem
+      Caption = 'E&xecute...'
+      OnClick = mnuObjExecuteClick
+    end
+    object popSep3: TMenuItem
+      Caption = '-'
+    end
+    object popMaintenance: TMenuItem
+      Caption = '&Maintenance'
+      object popBackup: TMenuItem
+        Caption = '&Backup...'
+        OnClick = mnuMaintenanceItemClick
+        Tag = 0
+      end
+      object popRestore: TMenuItem
+        Caption = '&Restore...'
+        OnClick = mnuMaintenanceItemClick
+        Tag = 1
+      end
+      object popValidate: TMenuItem
+        Caption = '&Validate...'
+        OnClick = mnuMaintenanceItemClick
+        Tag = 2
+      end
+      object popSweep: TMenuItem
+        Caption = '&Sweep...'
+        OnClick = mnuMaintenanceItemClick
+        Tag = 3
+      end
+      object popStatistics: TMenuItem
+        Caption = 'S&tatistics...'
+        OnClick = mnuMaintenanceItemClick
+        Tag = 4
+      end
+      object popSepM1: TMenuItem
+        Caption = '-'
+      end
+      object popRecovery: TMenuItem
+        Caption = 'T&ransaction Recovery...'
+        OnClick = mnuTransactionRecoveryClick
+      end
+      object popConnUsers: TMenuItem
+        Caption = '&Connected Users...'
+        OnClick = mnuConnectedUsersClick
+      end
+      object popUsers: TMenuItem
+        Caption = '&Users...'
+        OnClick = mnuUsersClick
+      end
+      object popExtract: TMenuItem
+        Caption = 'E&xtract Metadata...'
+        OnClick = mnuExtractMetadataClick
+      end
+    end
+    object popSep4: TMenuItem
+      Caption = '-'
+    end
+    object popRegisterDb: TMenuItem
+      Caption = 'Register &Database...'
+      OnClick = mnuRegisterDatabaseClick
+    end
+    object popUnregDb: TMenuItem
+      Caption = '&Unregister Database'
+      OnClick = mnuUnregisterDatabaseClick
+    end
+    object popUnregSrv: TMenuItem
+      Caption = '&Unregister Server'
+      OnClick = mnuUnregisterServerClick
+    end
+    object popServerProperties: TMenuItem
+      Caption = 'P&roperties...'
+      OnClick = mnuServerPropertiesClick
+    end
+    object popServerLog: TMenuItem
+      Caption = 'View &Log...'
+      OnClick = mnuServerLogClick
+    end
+    object popSep5: TMenuItem
+      Caption = '-'
+    end
+    object popRefresh: TMenuItem
+      Caption = 'Re&fresh'
+      OnClick = mnuRefreshClick
+    end
+  end
+end

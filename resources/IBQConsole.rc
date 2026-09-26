@@ -1,0 +1,36 @@
+/*==============================================================================
+  IBQConsole application resources.
+
+  Compiled to ../IBQConsole.res by utils/build-res.bat (Windows) or
+  utils/build-res.sh (Linux), and linked by the {$R *.res} in IBQConsole.lpr.
+
+  Icons are added here as they are drawn (see icons/ and SPECIFICATION.md 12),
+  so the finished executable carries every image it needs and loads nothing
+  from disk at run time.
+==============================================================================*/
+
+1 VERSIONINFO
+FILEVERSION     0,1,0,0
+PRODUCTVERSION  0,1,0,0
+FILEOS          0x4
+FILETYPE        0x1
+{
+  BLOCK "StringFileInfo"
+  {
+    BLOCK "040904E4"
+    {
+      VALUE "CompanyName",      "\0"
+      VALUE "FileDescription",  "IBQConsole - Firebird database editor\0"
+      VALUE "FileVersion",      "0.1.0.0\0"
+      VALUE "InternalName",     "IBQConsole\0"
+      VALUE "LegalCopyright",   "\0"
+      VALUE "OriginalFilename", "IBQConsole.exe\0"
+      VALUE "ProductName",      "IBQConsole\0"
+      VALUE "ProductVersion",   "0.1.0.0\0"
+    }
+  }
+  BLOCK "VarFileInfo"
+  {
+    VALUE "Translation", 0x0409, 1252
+  }
+}

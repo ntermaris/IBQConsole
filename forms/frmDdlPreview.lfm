@@ -1,0 +1,100 @@
+object frmIbqDdlPreview: TfrmIbqDdlPreview
+  Left = 320
+  Height = 420
+  Top = 180
+  Width = 760
+  Caption = 'DDL'
+  ClientHeight = 420
+  ClientWidth = 760
+  Constraints.MinHeight = 300
+  Constraints.MinWidth = 560
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  object pnlHeader: TPanel
+    Left = 0
+    Height = 60
+    Top = 0
+    Width = 760
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 60
+    ClientWidth = 760
+    TabOrder = 0
+    object lblWhat: TLabel
+      Left = 12
+      Height = 15
+      Top = 12
+      Width = 736
+      Anchors = [akTop, akLeft, akRight]
+      Caption = '-'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+      WordWrap = True
+    end
+    object lblWarning: TLabel
+      Left = 12
+      Height = 15
+      Top = 34
+      Width = 736
+      Anchors = [akTop, akLeft, akRight]
+      Caption = ''
+      Font.Color = clGrayText
+      ParentColor = False
+      ParentFont = False
+      WordWrap = True
+    end
+  end
+  object memStatement: TMemo
+    Left = 0
+    Height = 316
+    Top = 60
+    Width = 760
+    Align = alClient
+    Font.Name = 'Courier New'
+    ParentFont = False
+    ScrollBars = ssAutoBoth
+    TabOrder = 1
+    WordWrap = False
+  end
+  object pnlButtons: TPanel
+    Left = 0
+    Height = 44
+    Top = 376
+    Width = 760
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 44
+    ClientWidth = 760
+    TabOrder = 2
+    object lblStatus: TLabel
+      Left = 12
+      Height = 15
+      Top = 14
+      Width = 480
+      Caption = ''
+      ParentColor = False
+    end
+    object btnExecute: TButton
+      Left = 566
+      Height = 27
+      Top = 8
+      Width = 90
+      Anchors = [akTop, akRight]
+      Caption = 'Execute'
+      OnClick = btnExecuteClick
+      TabOrder = 0
+    end
+    object btnClose: TButton
+      Left = 664
+      Height = 27
+      Top = 8
+      Width = 84
+      Anchors = [akTop, akRight]
+      Cancel = True
+      Caption = 'Close'
+      ModalResult = 11
+      TabOrder = 1
+    end
+  end
+end

@@ -1,0 +1,15 @@
+bin/
+lib/
+backup/
+documentation/build/
+*.ppu
+*.o
+*.compiled
+*.or
+*.a
+*.exe
+*.dbg
+*.lps
+*.bak
+*.~*
+out/

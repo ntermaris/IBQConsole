@@ -1,0 +1,669 @@
+object frmIbqMaintenance: TfrmIbqMaintenance
+  Left = 280
+  Height = 660
+  Top = 100
+  Width = 840
+  Caption = 'Maintenance'
+  ClientHeight = 660
+  ClientWidth = 840
+  Constraints.MinHeight = 560
+  Constraints.MinWidth = 720
+  Position = poScreenCenter
+  OnClose = FormClose
+  OnCreate = FormCreate
+  object pnlHeader: TPanel
+    Left = 0
+    Height = 76
+    Top = 0
+    Width = 840
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 76
+    ClientWidth = 840
+    TabOrder = 0
+    object lblServer: TLabel
+      Left = 12
+      Height = 15
+      Top = 12
+      Width = 40
+      Caption = 'Server'
+      ParentColor = False
+    end
+    object lblServerValue: TLabel
+      Left = 96
+      Height = 15
+      Top = 12
+      Width = 60
+      Caption = '-'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object lblUser: TLabel
+      Left = 12
+      Height = 15
+      Top = 41
+      Width = 26
+      Caption = 'User'
+      ParentColor = False
+    end
+    object edtUser: TEdit
+      Left = 96
+      Height = 23
+      Top = 37
+      Width = 160
+      TabOrder = 0
+      Text = 'SYSDBA'
+    end
+    object lblPassword: TLabel
+      Left = 280
+      Height = 15
+      Top = 41
+      Width = 53
+      Caption = 'Password'
+      ParentColor = False
+    end
+    object edtPassword: TEdit
+      Left = 348
+      Height = 23
+      Top = 37
+      Width = 160
+      EchoMode = emPassword
+      PasswordChar = '*'
+      TabOrder = 1
+    end
+    object lblServerPaths: TLabel
+      Left = 536
+      Height = 30
+      Top = 34
+      Width = 292
+      Caption = 'Every file name below is a path on the server.'
+      Font.Color = clGrayText
+      ParentColor = False
+      ParentFont = False
+      WordWrap = True
+    end
+  end
+  object pnlButtons: TPanel
+    Left = 0
+    Height = 44
+    Top = 616
+    Width = 840
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 44
+    ClientWidth = 840
+    TabOrder = 4
+    object lblStatus: TLabel
+      Left = 12
+      Height = 15
+      Top = 14
+      Width = 300
+      Caption = ''
+      ParentColor = False
+    end
+    object btnStart: TButton
+      Left = 396
+      Height = 27
+      Top = 8
+      Width = 100
+      Caption = 'Start'
+      Default = True
+      OnClick = btnStartClick
+      TabOrder = 0
+    end
+    object btnCancel: TButton
+      Left = 504
+      Height = 27
+      Top = 8
+      Width = 100
+      Caption = 'Cancel'
+      Enabled = False
+      OnClick = btnCancelClick
+      TabOrder = 1
+    end
+    object btnSave: TButton
+      Left = 612
+      Height = 27
+      Top = 8
+      Width = 110
+      Caption = 'Save output...'
+      OnClick = btnSaveClick
+      TabOrder = 2
+    end
+    object btnClose: TButton
+      Left = 730
+      Height = 27
+      Top = 8
+      Width = 96
+      Cancel = True
+      Caption = 'Close'
+      ModalResult = 11
+      TabOrder = 3
+    end
+  end
+  object pnlOutput: TPanel
+    Left = 0
+    Height = 240
+    Top = 376
+    Width = 840
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 240
+    ClientWidth = 840
+    TabOrder = 3
+    object memOutput: TMemo
+      Left = 0
+      Height = 240
+      Top = 0
+      Width = 840
+      Align = alClient
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ParentFont = False
+      ReadOnly = True
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+      WordWrap = False
+    end
+  end
+  object splOutput: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 371
+    Width = 840
+    Align = alBottom
+    ResizeAnchor = akBottom
+  end
+  object pgcCommand: TPageControl
+    Left = 0
+    Height = 295
+    Top = 76
+    Width = 840
+    ActivePage = tabBackup
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 1
+    object tabBackup: TTabSheet
+      Caption = 'Backup'
+      ClientHeight = 267
+      ClientWidth = 832
+      object lblBackupDatabase: TLabel
+        Left = 12
+        Height = 15
+        Top = 16
+        Width = 55
+        Caption = 'Database'
+        ParentColor = False
+      end
+      object edtBackupDatabase: TEdit
+        Left = 110
+        Height = 23
+        Top = 12
+        Width = 700
+        ReadOnly = True
+        TabOrder = 0
+      end
+      object lblBackupFile: TLabel
+        Left = 12
+        Height = 15
+        Top = 48
+        Width = 63
+        Caption = 'Backup file'
+        ParentColor = False
+      end
+      object edtBackupFile: TEdit
+        Left = 110
+        Height = 23
+        Top = 44
+        Width = 700
+        TabOrder = 1
+      end
+      object grpBackupOptions: TGroupBox
+        Left = 12
+        Height = 186
+        Top = 76
+        Width = 798
+        Caption = 'Options'
+        ClientHeight = 166
+        ClientWidth = 794
+        TabOrder = 2
+        object chkBackupNoGarbage: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 8
+          Width = 240
+          Caption = 'No garbage collection (faster)'
+          TabOrder = 0
+        end
+        object chkBackupMetadataOnly: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 34
+          Width = 240
+          Caption = 'Metadata only, no data'
+          TabOrder = 1
+        end
+        object chkBackupIgnoreChecksums: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 60
+          Width = 240
+          Caption = 'Ignore bad checksums'
+          TabOrder = 2
+        end
+        object chkBackupIgnoreLimbo: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 86
+          Width = 240
+          Caption = 'Ignore limbo transactions'
+          TabOrder = 3
+        end
+        object chkBackupNonTransportable: TCheckBox
+          Left = 320
+          Height = 19
+          Top = 8
+          Width = 300
+          Caption = 'Non-transportable format'
+          TabOrder = 4
+        end
+        object chkBackupConvertExternal: TCheckBox
+          Left = 320
+          Height = 19
+          Top = 34
+          Width = 300
+          Caption = 'Convert external tables to internal'
+          TabOrder = 5
+        end
+        object chkBackupNoDbTriggers: TCheckBox
+          Left = 320
+          Height = 19
+          Top = 60
+          Width = 300
+          Caption = 'Do not fire database triggers'
+          TabOrder = 6
+        end
+        object chkBackupVerbose: TCheckBox
+          Left = 320
+          Height = 19
+          Top = 86
+          Width = 300
+          Caption = 'Report every step'
+          Checked = True
+          State = cbChecked
+          TabOrder = 7
+        end
+      end
+    end
+    object tabRestore: TTabSheet
+      Caption = 'Restore'
+      ClientHeight = 267
+      ClientWidth = 832
+      object lblRestoreSource: TLabel
+        Left = 12
+        Height = 15
+        Top = 16
+        Width = 63
+        Caption = 'Backup file'
+        ParentColor = False
+      end
+      object edtRestoreSource: TEdit
+        Left = 110
+        Height = 23
+        Top = 12
+        Width = 700
+        TabOrder = 0
+      end
+      object lblRestoreTarget: TLabel
+        Left = 12
+        Height = 15
+        Top = 48
+        Width = 55
+        Caption = 'Database'
+        ParentColor = False
+      end
+      object edtRestoreTarget: TEdit
+        Left = 110
+        Height = 23
+        Top = 44
+        Width = 700
+        TabOrder = 1
+      end
+      object grpRestoreOptions: TGroupBox
+        Left = 12
+        Height = 150
+        Top = 76
+        Width = 798
+        Caption = 'Options'
+        ClientHeight = 130
+        ClientWidth = 794
+        TabOrder = 2
+        object chkRestoreReplace: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 8
+          Width = 340
+          Caption = 'Replace the existing database (destroys it)'
+          TabOrder = 0
+        end
+        object chkRestoreDeactivateIndexes: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 34
+          Width = 340
+          Caption = 'Leave indexes inactive'
+          TabOrder = 1
+        end
+        object chkRestoreNoShadow: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 60
+          Width = 340
+          Caption = 'Do not recreate shadows'
+          TabOrder = 2
+        end
+        object chkRestoreNoValidity: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 86
+          Width = 340
+          Caption = 'Do not restore validity constraints'
+          TabOrder = 3
+        end
+        object chkRestoreOneRelation: TCheckBox
+          Left = 400
+          Height = 19
+          Top = 8
+          Width = 320
+          Caption = 'Commit after each table'
+          TabOrder = 4
+        end
+        object chkRestoreUseAllSpace: TCheckBox
+          Left = 400
+          Height = 19
+          Top = 34
+          Width = 320
+          Caption = 'Fill pages completely'
+          TabOrder = 5
+        end
+        object chkRestoreMetadataOnly: TCheckBox
+          Left = 400
+          Height = 19
+          Top = 60
+          Width = 320
+          Caption = 'Metadata only, no data'
+          TabOrder = 6
+        end
+      end
+      object lblPageSize: TLabel
+        Left = 12
+        Height = 15
+        Top = 238
+        Width = 55
+        Caption = 'Page size'
+        ParentColor = False
+      end
+      object edtPageSize: TEdit
+        Left = 110
+        Height = 23
+        Top = 234
+        Width = 90
+        TabOrder = 3
+      end
+      object lblPageBuffers: TLabel
+        Left = 232
+        Height = 15
+        Top = 238
+        Width = 70
+        Caption = 'Page buffers'
+        ParentColor = False
+      end
+      object edtPageBuffers: TEdit
+        Left = 328
+        Height = 23
+        Top = 234
+        Width = 90
+        TabOrder = 4
+      end
+    end
+    object tabValidate: TTabSheet
+      Caption = 'Validation'
+      ClientHeight = 267
+      ClientWidth = 832
+      object lblValidateDatabase: TLabel
+        Left = 12
+        Height = 15
+        Top = 16
+        Width = 55
+        Caption = 'Database'
+        ParentColor = False
+      end
+      object edtValidateDatabase: TEdit
+        Left = 110
+        Height = 23
+        Top = 12
+        Width = 700
+        ReadOnly = True
+        TabOrder = 0
+      end
+      object rgpValidateMode: TRadioGroup
+        Left = 12
+        Height = 56
+        Top = 44
+        Width = 798
+        AutoFill = True
+        Caption = 'Kind'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 2
+        ClientHeight = 36
+        ClientWidth = 794
+        Columns = 2
+        ItemIndex = 0
+        Items.Strings = (
+          'Full - exclusive access, can repair'
+          'Online - live database, repairs nothing'
+        )
+        OnClick = rgpValidateModeClick
+        TabOrder = 1
+      end
+      object grpValidateOptions: TGroupBox
+        Left = 12
+        Height = 116
+        Top = 106
+        Width = 798
+        Caption = 'Options'
+        ClientHeight = 96
+        ClientWidth = 794
+        TabOrder = 2
+        object chkValidateStructures: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 8
+          Width = 340
+          Caption = 'Validate record and page structures'
+          Checked = True
+          State = cbChecked
+          TabOrder = 0
+        end
+        object chkValidateFull: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 34
+          Width = 340
+          Caption = 'Validate record fragments too (slower)'
+          TabOrder = 1
+        end
+        object chkValidateCheckDb: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 60
+          Width = 340
+          Caption = 'Check without repairing'
+          TabOrder = 2
+        end
+        object chkValidateIgnoreChecksum: TCheckBox
+          Left = 400
+          Height = 19
+          Top = 8
+          Width = 340
+          Caption = 'Ignore bad checksums'
+          TabOrder = 3
+        end
+        object chkValidateKillShadows: TCheckBox
+          Left = 400
+          Height = 19
+          Top = 34
+          Width = 340
+          Caption = 'Remove unavailable shadows'
+          TabOrder = 4
+        end
+        object chkValidateMend: TCheckBox
+          Left = 400
+          Height = 19
+          Top = 60
+          Width = 340
+          Caption = 'Mend: mark damaged records deleted'
+          TabOrder = 5
+        end
+      end
+      object lblValidateWarning: TLabel
+        Left = 12
+        Height = 32
+        Top = 228
+        Width = 798
+        Caption = 'A full validation needs exclusive access.'
+        Font.Color = clGrayText
+        ParentColor = False
+        ParentFont = False
+        WordWrap = True
+      end
+    end
+    object tabSweep: TTabSheet
+      Caption = 'Sweep'
+      ClientHeight = 267
+      ClientWidth = 832
+      object lblSweepDatabase: TLabel
+        Left = 12
+        Height = 15
+        Top = 16
+        Width = 55
+        Caption = 'Database'
+        ParentColor = False
+      end
+      object edtSweepDatabase: TEdit
+        Left = 110
+        Height = 23
+        Top = 12
+        Width = 700
+        ReadOnly = True
+        TabOrder = 0
+      end
+      object lblSweepExplain: TLabel
+        Left = 12
+        Height = 60
+        Top = 52
+        Width = 798
+        Caption = 'A sweep removes the record versions left behind by unfinished transactions.'
+        ParentColor = False
+        WordWrap = True
+      end
+    end
+    object tabStatistics: TTabSheet
+      Caption = 'Statistics'
+      ClientHeight = 267
+      ClientWidth = 832
+      object lblStatsDatabase: TLabel
+        Left = 12
+        Height = 15
+        Top = 16
+        Width = 55
+        Caption = 'Database'
+        ParentColor = False
+      end
+      object edtStatsDatabase: TEdit
+        Left = 110
+        Height = 23
+        Top = 12
+        Width = 700
+        ReadOnly = True
+        TabOrder = 0
+      end
+      object grpStatsOptions: TGroupBox
+        Left = 12
+        Height = 140
+        Top = 48
+        Width = 798
+        Caption = 'Options'
+        ClientHeight = 120
+        ClientWidth = 794
+        TabOrder = 1
+        object chkStatsHeader: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 8
+          Width = 340
+          Caption = 'Header page (fast, and usually enough)'
+          Checked = True
+          State = cbChecked
+          OnClick = StatsOptionClick
+          TabOrder = 0
+        end
+        object chkStatsIndex: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 34
+          Width = 340
+          Caption = 'Index statistics'
+          OnClick = StatsOptionClick
+          TabOrder = 1
+        end
+        object chkStatsData: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 60
+          Width = 340
+          Caption = 'Data pages (reads the whole database)'
+          OnClick = StatsOptionClick
+          TabOrder = 2
+        end
+        object chkStatsSystem: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 86
+          Width = 340
+          Caption = 'Include system tables'
+          OnClick = StatsOptionClick
+          TabOrder = 3
+        end
+      end
+    end
+    object tabServerLog: TTabSheet
+      Caption = 'Server log'
+      ClientHeight = 267
+      ClientWidth = 832
+      object lblServerLogExplain: TLabel
+        Left = 12
+        Height = 60
+        Top = 16
+        Width = 798
+        Caption = 'Fetches firebird.log from the server.'
+        ParentColor = False
+        WordWrap = True
+      end
+    end
+  end
+  object dlgSaveOutput: TSaveDialog
+    DefaultExt = '.txt'
+    Filter = 'Text file|*.txt|All files|*.*'
+    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
+    Left = 760
+    Top = 380
+  end
+end

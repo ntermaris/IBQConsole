@@ -1,0 +1,193 @@
+object frmIbqExecuteRoutine: TfrmIbqExecuteRoutine
+  Left = 320
+  Height = 560
+  Top = 160
+  Width = 780
+  Caption = 'Execute Procedure'
+  ClientHeight = 560
+  ClientWidth = 780
+  Constraints.MinHeight = 400
+  Constraints.MinWidth = 620
+  Position = poScreenCenter
+  OnClose = FormClose
+  OnCreate = FormCreate
+  object pnlTop: TPanel
+    Left = 0
+    Height = 52
+    Top = 0
+    Width = 780
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 52
+    ClientWidth = 780
+    TabOrder = 0
+    object lblRoutine: TLabel
+      Left = 12
+      Height = 20
+      Top = 8
+      Width = 60
+      Caption = 'Procedure'
+      Font.Height = -16
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object lblKind: TLabel
+      Left = 12
+      Height = 15
+      Top = 30
+      Width = 40
+      Caption = 'Kind'
+      ParentColor = False
+    end
+  end
+  object pnlBottom: TPanel
+    Left = 0
+    Height = 44
+    Top = 516
+    Width = 780
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 44
+    ClientWidth = 780
+    TabOrder = 4
+    object lblTransaction: TLabel
+      Left = 12
+      Height = 15
+      Top = 14
+      Width = 90
+      Caption = 'No transaction'
+      Font.Color = clGrayText
+      ParentColor = False
+      ParentFont = False
+    end
+    object btnExecute: TButton
+      Left = 336
+      Height = 27
+      Top = 8
+      Width = 100
+      Caption = 'Execute'
+      Default = True
+      OnClick = btnExecuteClick
+      TabOrder = 0
+    end
+    object btnCommit: TButton
+      Left = 444
+      Height = 27
+      Top = 8
+      Width = 90
+      Caption = 'Commit'
+      Enabled = False
+      OnClick = btnCommitClick
+      TabOrder = 1
+    end
+    object btnRollback: TButton
+      Left = 542
+      Height = 27
+      Top = 8
+      Width = 90
+      Caption = 'Rollback'
+      Enabled = False
+      OnClick = btnRollbackClick
+      TabOrder = 2
+    end
+    object btnClose: TButton
+      Left = 656
+      Height = 27
+      Top = 8
+      Width = 100
+      Cancel = True
+      Caption = 'Close'
+      ModalResult = 11
+      TabOrder = 3
+    end
+  end
+  object grdParams: TStringGrid
+    Left = 0
+    Height = 170
+    Top = 52
+    Width = 780
+    Align = alTop
+    ColCount = 4
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goThumbTracking, goSmoothScroll]
+    RowCount = 1
+    ScrollBars = ssAutoBoth
+    TabOrder = 1
+    OnEditingDone = grdParamsEditingDone
+    OnSelectEditor = grdParamsSelectEditor
+  end
+  object splStatement: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 222
+    Width = 780
+    Align = alTop
+    ResizeAnchor = akTop
+  end
+  object pgcResults: TPageControl
+    Left = 0
+    Height = 289
+    Top = 227
+    Width = 780
+    ActivePage = tabStatement
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 3
+    object tabStatement: TTabSheet
+      Caption = 'Statement'
+      ClientHeight = 261
+      ClientWidth = 772
+      object memStatement: TMemo
+        Left = 0
+        Height = 261
+        Top = 0
+        Width = 772
+        Align = alClient
+        Font.Height = -12
+        Font.Name = 'Courier New'
+        ParentFont = False
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WordWrap = False
+      end
+    end
+    object tabResults: TTabSheet
+      Caption = 'Results'
+      ClientHeight = 261
+      ClientWidth = 772
+      object grdResults: TStringGrid
+        Left = 0
+        Height = 261
+        Top = 0
+        Width = 772
+        Align = alClient
+        FixedCols = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goThumbTracking, goSmoothScroll]
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+    end
+    object tabMessages: TTabSheet
+      Caption = 'Messages'
+      ClientHeight = 261
+      ClientWidth = 772
+      object memMessages: TMemo
+        Left = 0
+        Height = 261
+        Top = 0
+        Width = 772
+        Align = alClient
+        Font.Height = -12
+        Font.Name = 'Courier New'
+        ParentFont = False
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WordWrap = False
+      end
+    end
+  end
+end

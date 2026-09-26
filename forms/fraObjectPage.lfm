@@ -1,0 +1,231 @@
+object fraObjectPage: TfraObjectPage
+  Left = 0
+  Height = 460
+  Top = 0
+  Width = 820
+  ClientHeight = 460
+  ClientWidth = 820
+  TabOrder = 0
+  object pgcTabs: TPageControl
+    Left = 0
+    Height = 460
+    Top = 0
+    Width = 820
+    ActivePage = tabProperties
+    Align = alClient
+    TabIndex = 0
+    object tabProperties: TTabSheet
+      Caption = 'Properties'
+      ClientHeight = 432
+      ClientWidth = 812
+      object grdProperties: TStringGrid
+        Left = 0
+        Height = 432
+        Top = 0
+        Width = 812
+        Align = alClient
+        FixedCols = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goThumbTracking, goSmoothScroll]
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+    end
+    object tabColumns: TTabSheet
+      Caption = 'Columns'
+      ClientHeight = 432
+      ClientWidth = 812
+      object grdColumns: TStringGrid
+        Left = 0
+        Height = 432
+        Top = 0
+        Width = 812
+        Align = alClient
+        FixedCols = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goThumbTracking, goSmoothScroll]
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+    end
+    object tabParameters: TTabSheet
+      Caption = 'Parameters'
+      ClientHeight = 432
+      ClientWidth = 812
+      object grdParameters: TStringGrid
+        Left = 0
+        Height = 432
+        Top = 0
+        Width = 812
+        Align = alClient
+        FixedCols = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goThumbTracking, goSmoothScroll]
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+    end
+    object tabIndexInfo: TTabSheet
+      Caption = 'Index'
+      ClientHeight = 432
+      ClientWidth = 812
+      object grdIndexInfo: TStringGrid
+        Left = 0
+        Height = 432
+        Top = 0
+        Width = 812
+        Align = alClient
+        FixedCols = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goThumbTracking, goSmoothScroll]
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+    end
+    object tabIndexes: TTabSheet
+      Caption = 'Indexes'
+      ClientHeight = 432
+      ClientWidth = 812
+      object grdIndexes: TStringGrid
+        Left = 0
+        Height = 432
+        Top = 0
+        Width = 812
+        Align = alClient
+        FixedCols = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goThumbTracking, goSmoothScroll]
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+    end
+    object tabConstraints: TTabSheet
+      Caption = 'Constraints'
+      ClientHeight = 432
+      ClientWidth = 812
+      object grdConstraints: TStringGrid
+        Left = 0
+        Height = 432
+        Top = 0
+        Width = 812
+        Align = alClient
+        FixedCols = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goThumbTracking, goSmoothScroll]
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+    end
+    object tabTriggers: TTabSheet
+      Caption = 'Triggers'
+      ClientHeight = 432
+      ClientWidth = 812
+      object grdTriggers: TStringGrid
+        Left = 0
+        Height = 432
+        Top = 0
+        Width = 812
+        Align = alClient
+        FixedCols = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goThumbTracking, goSmoothScroll]
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+    end
+    object tabSource: TTabSheet
+      Caption = 'Source'
+      ClientHeight = 432
+      ClientWidth = 812
+      object memSource: TMemo
+        Left = 0
+        Height = 432
+        Top = 0
+        Width = 812
+        Align = alClient
+        Font.Height = -12
+        Font.Name = 'Courier New'
+        ParentFont = False
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WordWrap = False
+      end
+    end
+    object tabDependsOn: TTabSheet
+      Caption = 'Depends on'
+      ClientHeight = 432
+      ClientWidth = 812
+      object grdDependsOn: TStringGrid
+        Left = 0
+        Height = 432
+        Top = 0
+        Width = 812
+        Align = alClient
+        FixedCols = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goThumbTracking, goSmoothScroll]
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+    end
+    object tabUsedBy: TTabSheet
+      Caption = 'Used by'
+      ClientHeight = 432
+      ClientWidth = 812
+      object grdUsedBy: TStringGrid
+        Left = 0
+        Height = 432
+        Top = 0
+        Width = 812
+        Align = alClient
+        FixedCols = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goThumbTracking, goSmoothScroll]
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+    end
+    object tabPermissions: TTabSheet
+      Caption = 'Permissions'
+      ClientHeight = 432
+      ClientWidth = 812
+      object grdPermissions: TStringGrid
+        Left = 0
+        Height = 432
+        Top = 0
+        Width = 812
+        Align = alClient
+        FixedCols = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goThumbTracking, goSmoothScroll]
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+    end
+    object tabData: TTabSheet
+      Caption = 'Data'
+      ClientHeight = 432
+      ClientWidth = 812
+      object pnlData: TPanel
+        Left = 0
+        Height = 432
+        Top = 0
+        Width = 812
+        Align = alClient
+        BevelOuter = bvNone
+        Caption = ''
+        TabOrder = 0
+      end
+    end
+    object tabDdl: TTabSheet
+      Caption = 'DDL'
+      ClientHeight = 432
+      ClientWidth = 812
+      object memDdl: TMemo
+        Left = 0
+        Height = 432
+        Top = 0
+        Width = 812
+        Align = alClient
+        Font.Height = -12
+        Font.Name = 'Courier New'
+        ParentFont = False
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WordWrap = False
+      end
+    end
+  end
+end

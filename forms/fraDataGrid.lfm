@@ -1,0 +1,110 @@
+object fraDataGrid: TfraDataGrid
+  Left = 0
+  Height = 420
+  Top = 0
+  Width = 780
+  ClientHeight = 420
+  ClientWidth = 780
+  TabOrder = 0
+  object pnlToolbar: TPanel
+    Left = 0
+    Height = 36
+    Top = 0
+    Width = 780
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 36
+    ClientWidth = 780
+    TabOrder = 0
+    object btnCommit: TButton
+      Left = 8
+      Height = 26
+      Top = 5
+      Width = 96
+      Caption = 'Commit'
+      OnClick = btnCommitClick
+      TabOrder = 0
+    end
+    object btnRollback: TButton
+      Left = 110
+      Height = 26
+      Top = 5
+      Width = 96
+      Caption = 'Rollback'
+      OnClick = btnRollbackClick
+      TabOrder = 1
+    end
+    object btnRefresh: TButton
+      Left = 212
+      Height = 26
+      Top = 5
+      Width = 96
+      Caption = 'Refresh'
+      OnClick = btnRefreshClick
+      TabOrder = 2
+    end
+    object btnInsert: TButton
+      Left = 320
+      Height = 26
+      Top = 5
+      Width = 96
+      Caption = 'Insert row'
+      OnClick = btnInsertClick
+      TabOrder = 3
+    end
+    object btnDelete: TButton
+      Left = 422
+      Height = 26
+      Top = 5
+      Width = 96
+      Caption = 'Delete row'
+      OnClick = btnDeleteClick
+      TabOrder = 4
+    end
+    object btnExport: TButton
+      Left = 530
+      Height = 26
+      Top = 5
+      Width = 96
+      Caption = 'Export...'
+      OnClick = btnExportClick
+      TabOrder = 5
+    end
+  end
+  object lblStatus: TLabel
+    Left = 0
+    Height = 17
+    Top = 403
+    Width = 780
+    Align = alBottom
+    Caption = ' '
+    ParentColor = False
+  end
+  object grdData: TDBGrid
+    Left = 0
+    Height = 367
+    Top = 36
+    Width = 780
+    Align = alClient
+    AutoFillColumns = False
+    Color = clWindow
+    Columns = <>
+    DataSource = dsData
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgEditing, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgDisableDelete, dgDisableInsert]
+    OnDblClick = grdDataDblClick
+    TabOrder = 1
+  end
+  object dsData: TDataSource
+    OnStateChange = dsDataStateChange
+    Left = 690
+    Top = 60
+  end
+  object dlgExport: TSaveDialog
+    Title = 'Export rows'
+    DefaultExt = '.csv'
+    Filter = 'CSV|*.csv|Tab separated|*.tsv|JSON|*.json|HTML|*.html|Markdown|*.md|INSERT statements|*.sql'
+    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
+    Left = 690
+    Top = 120
+  end
+end

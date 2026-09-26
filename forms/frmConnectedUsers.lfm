@@ -1,0 +1,127 @@
+object frmIbqConnectedUsers: TfrmIbqConnectedUsers
+  Left = 240
+  Height = 560
+  Top = 140
+  Width = 1020
+  Caption = 'Connected Users'
+  ClientHeight = 560
+  ClientWidth = 1020
+  Constraints.MinHeight = 420
+  Constraints.MinWidth = 820
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  object pnlHeader: TPanel
+    Left = 0
+    Height = 52
+    Top = 0
+    Width = 1020
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 52
+    ClientWidth = 1020
+    TabOrder = 0
+    object lblDatabase: TLabel
+      Left = 12
+      Height = 15
+      Top = 10
+      Width = 53
+      Caption = 'Database'
+      ParentColor = False
+    end
+    object lblDatabaseValue: TLabel
+      Left = 96
+      Height = 15
+      Top = 10
+      Width = 12
+      Caption = '-'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object lblWarning: TLabel
+      Left = 12
+      Height = 15
+      Top = 31
+      Width = 996
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'Disconnecting ends the connection at once and rolls back whatever it was doing.'
+      Font.Color = clGrayText
+      ParentColor = False
+      ParentFont = False
+    end
+  end
+  object grdAttachments: TStringGrid
+    Left = 0
+    Height = 464
+    Top = 52
+    Width = 1020
+    Align = alClient
+    ColCount = 8
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect, goThumbTracking, goSmoothScroll]
+    RowCount = 1
+    ScrollBars = ssAutoBoth
+    TabOrder = 1
+    OnSelection = grdAttachmentsSelection
+    ColWidths = (
+      90
+      140
+      120
+      140
+      200
+      150
+      80
+      90
+    )
+  end
+  object pnlButtons: TPanel
+    Left = 0
+    Height = 44
+    Top = 516
+    Width = 1020
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 44
+    ClientWidth = 1020
+    TabOrder = 2
+    object lblStatus: TLabel
+      Left = 12
+      Height = 15
+      Top = 14
+      Width = 400
+      Caption = ''
+      ParentColor = False
+    end
+    object btnDisconnect: TButton
+      Left = 736
+      Height = 27
+      Top = 8
+      Width = 110
+      Anchors = [akTop, akRight]
+      Caption = 'Disconnect'
+      OnClick = btnDisconnectClick
+      TabOrder = 0
+    end
+    object btnRefresh: TButton
+      Left = 854
+      Height = 27
+      Top = 8
+      Width = 90
+      Anchors = [akTop, akRight]
+      Caption = 'Refresh'
+      OnClick = btnRefreshClick
+      TabOrder = 1
+    end
+    object btnClose: TButton
+      Left = 952
+      Height = 27
+      Top = 8
+      Width = 56
+      Anchors = [akTop, akRight]
+      Cancel = True
+      Caption = 'Close'
+      ModalResult = 11
+      TabOrder = 2
+    end
+  end
+end

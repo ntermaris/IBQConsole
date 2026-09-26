@@ -1,0 +1,157 @@
+﻿object frmIbqBlobEditor: TfrmIbqBlobEditor
+  Left = 300
+  Height = 560
+  Top = 130
+  Width = 820
+  Caption = 'BLOB contents'
+  ClientHeight = 560
+  ClientWidth = 820
+  OnCreate = FormCreate
+  Position = poMainFormCenter
+  LCLVersion = '3.0.0.0'
+  object pgcViews: TPageControl
+    Left = 0
+    Height = 500
+    Top = 0
+    Width = 820
+    ActivePage = tabText
+    Align = alClient
+    TabIndex = 0
+    object tabText: TTabSheet
+      Caption = 'Text'
+      ClientHeight = 472
+      ClientWidth = 812
+      object memText: TMemo
+        Left = 0
+        Height = 472
+        Top = 0
+        Width = 812
+        Align = alClient
+        Font.Height = -13
+        Font.Name = 'Courier New'
+        OnChange = memTextChange
+        ParentFont = False
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WordWrap = False
+      end
+    end
+    object tabHex: TTabSheet
+      Caption = 'Hex'
+      ClientHeight = 472
+      ClientWidth = 812
+      object memHex: TMemo
+        Left = 0
+        Height = 472
+        Top = 0
+        Width = 812
+        Align = alClient
+        Font.Height = -13
+        Font.Name = 'Courier New'
+        ParentFont = False
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WordWrap = False
+      end
+    end
+    object tabImage: TTabSheet
+      Caption = 'Image'
+      ClientHeight = 472
+      ClientWidth = 812
+      object scrImage: TScrollBox
+        Left = 0
+        Height = 472
+        Top = 0
+        Width = 812
+        HorzScrollBar.Page = 1
+        VertScrollBar.Page = 1
+        Align = alClient
+        TabOrder = 0
+        object imgPreview: TImage
+          Left = 0
+          Height = 200
+          Top = 0
+          Width = 300
+        end
+      end
+    end
+  end
+  object pnlBottom: TPanel
+    Left = 0
+    Height = 60
+    Top = 500
+    Width = 820
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 60
+    ClientWidth = 820
+    TabOrder = 1
+    object lblInfo: TLabel
+      Left = 12
+      Height = 15
+      Top = 8
+      Width = 600
+      Caption = ' '
+      ParentColor = False
+    end
+    object btnLoad: TButton
+      Left = 12
+      Height = 27
+      Top = 28
+      Width = 140
+      AutoSize = True
+      Caption = 'Load from file...'
+      OnClick = btnLoadClick
+      TabOrder = 0
+    end
+    object btnSave: TButton
+      Left = 162
+      Height = 27
+      Top = 28
+      Width = 140
+      AutoSize = True
+      Caption = 'Save to file...'
+      OnClick = btnSaveClick
+      TabOrder = 1
+    end
+    object btnOK: TButton
+      Left = 614
+      Height = 27
+      Top = 28
+      Width = 88
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      Caption = 'OK'
+      Default = True
+      ModalResult = 1
+      TabOrder = 2
+    end
+    object btnCancel: TButton
+      Left = 710
+      Height = 27
+      Top = 28
+      Width = 98
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 3
+    end
+  end
+  object dlgOpenBlob: TOpenDialog
+    Title = 'Load BLOB from file'
+    Filter = 'All files|*.*'
+    Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Left = 340
+    Top = 512
+  end
+  object dlgSaveBlob: TSaveDialog
+    Title = 'Save BLOB to file'
+    Filter = 'All files|*.*'
+    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
+    Left = 400
+    Top = 512
+  end
+end

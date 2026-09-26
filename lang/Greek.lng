@@ -1,0 +1,601 @@
+; IBQConsole — Greek language file
+; Translator: Alexandros Ntermaris
+;
+; Encoding: UTF-8. Use $nl for a line break inside a value.
+; A key that is missing, empty, or commented out falls back to the English
+; text compiled into the program — a partial translation is always safe.
+; Keys are named <ComponentName>.caption / .hint, or module.purpose for
+; runtime messages.
+;
+; Checked with:  utils/langcheck.pas lang/Greek.lng . --dynamic node.
+; Every key the program asks for is present. When a key is added to the
+; source, langcheck reports it here rather than letting it fall back to
+; English unnoticed.
+
+[Fonts]
+DialogFontName=Segoe UI
+DialogFontSize=9
+
+[Strings]
+LangID=1032
+
+; --- common ---------------------------------------------------------------
+btnOK.caption=OK
+btnCancel.caption=Άκυρο
+btnClose.caption=Κλείσιμο
+btnRefresh.caption=Ανανέωση
+btnBrowse.caption=Αναζήτηση...
+btnBrowseClient.caption=Αναζήτηση...
+word.yes=Ναι
+word.no=Όχι
+common.yes=Ναι
+
+; --- main window menus ----------------------------------------------------
+frmMain.caption=IBQConsole
+
+mnuConsole.caption=&Κονσόλα
+mnuRegisterServer.caption=Καταχώριση &διακομιστή...
+mnuRegisterDatabase.caption=Καταχώριση &βάσης...
+mnuImportRegistrations.caption=Εισαγωγή καταχωρίσεων...
+mnuPreferences.caption=&Προτιμήσεις...
+mnuExit.caption=Έ&ξοδος
+
+mnuView.caption=Π&ροβολή
+mnuRefresh.caption=&Ανανέωση
+mnuShowSystem.caption=Εμφάνιση &αντικειμένων συστήματος
+mnuShowLog.caption=Εμφάνιση &καταγραφής
+
+mnuServer.caption=&Διακομιστής
+mnuServerConnect.caption=&Σύνδεση
+mnuServerDisconnect.caption=&Αποσύνδεση
+mnuServerProperties.caption=&Ιδιότητες...
+mnuServerLog.caption=Αρχείο &καταγραφής διακομιστή...
+mnuUnregisterServer.caption=Κατάργηση καταχώρισης
+
+mnuDatabase.caption=&Βάση δεδομένων
+mnuDbConnect.caption=&Σύνδεση
+mnuDbDisconnect.caption=&Αποσύνδεση
+mnuUnregisterDatabase.caption=Κατάργηση καταχώρισης
+
+mnuMaintenance.caption=Σ&υντήρηση
+mnuBackup.caption=&Αντίγραφο ασφαλείας...
+mnuRestore.caption=&Επαναφορά...
+mnuSweep.caption=&Σάρωση (sweep)...
+mnuValidate.caption=Έ&λεγχος εγκυρότητας...
+mnuStatistics.caption=Σ&τατιστικά...
+mnuTransactionRecovery.caption=Ανάκτηση &συναλλαγών...
+mnuConnectedUsers.caption=Συνδεδεμένοι &χρήστες...
+mnuUsers.caption=&Χρήστες...
+mnuExtractMetadata.caption=Ε&ξαγωγή μεταδεδομένων...
+
+mnuObject.caption=&Αντικείμενο
+mnuObjRefresh.caption=&Ανανέωση
+mnuScriptAs.caption=&Δημιουργία εντολής
+mnuObjExecute.caption=&Εκτέλεση...
+mnuObjProperties.caption=&Ιδιότητες...
+mnuObjDdlToEditor.caption=Άνοιγμα DDL στον &επεξεργαστή SQL
+mnuObjNew.caption=&Νέο...
+mnuObjAlter.caption=&Τροποποίηση...
+mnuObjDrop.caption=Δια&γραφή...
+
+mnuTools.caption=Ε&ργαλεία
+mnuNewSqlEditor.caption=Νέος επεξεργαστής &SQL
+mnuLanguage.caption=&Γλώσσα
+mnuOptions.caption=Ε&πιλογές...
+
+mnuHelp.caption=&Βοήθεια
+mnuAbout.caption=&Περί...
+
+; --- tree folder and item captions (built at run time by NodeCaptionKey) ---
+node.root=IBQConsole
+node.server=Διακομιστής
+node.database=Βάση δεδομένων
+node.serverlog=Αρχείο καταγραφής διακομιστή
+node.unknown=Άγνωστο
+
+node.schemas=Σχήματα
+node.schemas.item=Σχήμα
+node.domains=Τομείς
+node.domains.item=Τομέας
+node.sysdomains=Τομείς συστήματος
+node.sysdomains.item=Τομέας συστήματος
+node.tables=Πίνακες
+node.tables.item=Πίνακας
+node.gtts=Προσωρινοί πίνακες
+node.gtts.item=Προσωρινός πίνακας
+node.systemtables=Πίνακες συστήματος
+node.systemtables.item=Πίνακας συστήματος
+node.views=Όψεις
+node.views.item=Όψη
+node.procedures=Αποθηκευμένες διαδικασίες
+node.procedures.item=Αποθηκευμένη διαδικασία
+node.functions=Συναρτήσεις
+node.functions.item=Συνάρτηση
+node.udfs=Εξωτερικές συναρτήσεις
+node.udfs.item=Εξωτερική συνάρτηση
+node.packages=Πακέτα
+node.packages.item=Πακέτο
+node.triggers=Εναύσματα
+node.triggers.item=Έναυσμα
+node.dbtriggers=Εναύσματα βάσης
+node.dbtriggers.item=Έναυσμα βάσης
+node.ddltriggers=Εναύσματα DDL
+node.ddltriggers.item=Έναυσμα DDL
+node.generators=Γεννήτριες
+node.generators.item=Γεννήτρια
+node.exceptions=Εξαιρέσεις
+node.exceptions.item=Εξαίρεση
+node.indices=Ευρετήρια
+node.indices.item=Ευρετήριο
+node.sysindices=Ευρετήρια συστήματος
+node.sysindices.item=Ευρετήριο συστήματος
+node.roles=Ρόλοι
+node.roles.item=Ρόλος
+node.users=Χρήστες
+node.users.item=Χρήστης
+node.charactersets=Σύνολα χαρακτήρων
+node.charactersets.item=Σύνολο χαρακτήρων
+node.collations=Ταξινομήσεις
+node.collations.item=Ταξινόμηση
+node.publications=Δημοσιεύσεις
+node.publications.item=Δημοσίευση
+node.blobfilters=Φίλτρα BLOB
+node.blobfilters.item=Φίλτρο BLOB
+node.columns=Στήλες
+node.columns.item=Στήλη
+node.parameters=Παράμετροι
+node.parameters.item=Παράμετρος
+node.constraints=Περιορισμοί
+node.constraints.item=Περιορισμός
+node.backupaliases=Αντίγραφα ασφαλείας
+node.backupaliases.item=Αντίγραφο ασφαλείας
+
+; --- object page tabs -----------------------------------------------------
+tab.properties=Ιδιότητες
+tab.data=Δεδομένα
+tab.messages=Μηνύματα
+tab.plan=Σχέδιο εκτέλεσης
+tab.statistics=Στατιστικά
+tab.error=Σφάλμα
+
+; --- property page --------------------------------------------------------
+prop.name=Ιδιότητα
+prop.value=Τιμή
+prop.objectName=Όνομα
+prop.objectType=Τύπος
+prop.schema=Σχήμα
+prop.objectId=Εσωτερικό αναγνωριστικό
+prop.quotedName=Όνομα σε εισαγωγικά
+prop.needsQuoting=Απαιτεί εισαγωγικά
+prop.description=Περιγραφή
+prop.database=Βάση δεδομένων
+
+; --- window titles --------------------------------------------------------
+frmServerRegistration.caption=Καταχώριση διακομιστή
+frmDatabaseRegistration.caption=Καταχώριση βάσης δεδομένων
+frmBlobEditor.caption=Περιεχόμενο BLOB
+frmStatementHistory.caption=Ιστορικό εντολών
+frmExecuteRoutine.caption=Εκτέλεση διαδικασίας
+frmMaintenance.caption=Συντήρηση
+frmUserManager.caption=Χρήστες
+frmConnectedUsers.caption=Συνδεδεμένοι χρήστες
+frmTransactionRecovery.caption=Ανάκτηση συναλλαγών
+frmImportRegistrations.caption=Εισαγωγή καταχωρίσεων
+frmObjectEditor.caption=Νέο αντικείμενο
+frmPreferences.caption=Προτιμήσεις
+frmServerProperties.caption=Ιδιότητες διακομιστή
+
+; --- registration dialogs -------------------------------------------------
+lblName.caption=Όνομα εμφάνισης
+lblHost.caption=Διακομιστής
+lblPort.caption=Θύρα
+lblUser.caption=Όνομα χρήστη
+lblRole.caption=Ρόλος
+lblDescription.caption=Περιγραφή
+lblClientLib.caption=Βιβλιοθήκη πελάτη
+lblPath.caption=Αρχείο βάσης δεδομένων
+lblCharset.caption=Σύνολο χαρακτήρων
+lblMode.caption=Σύνδεση
+lblPageBuffers.caption=Buffer σελίδων
+lblPasswordStorage.caption=Κωδικός πρόσβασης
+chkRoleCaseSensitive.caption=Διάκριση πεζών-κεφαλαίων
+
+mode.remote=Απομακρυσμένος διακομιστής (TCP)
+mode.local=Τοπικός διακομιστής
+mode.embedded=Ενσωματωμένη — χωρίς διακομιστή
+
+hint.remote=Η διαδρομή είναι το αρχείο της βάσης όπως το βλέπει ο ΔΙΑΚΟΜΙΣΤΗΣ, ή ένα ψευδώνυμο ορισμένο στον διακομιστή.
+hint.local=Μια τοπική σύνδεση εξακολουθεί να απαιτεί υπηρεσία Firebird σε λειτουργία σε αυτό το μηχάνημα.
+hint.embedded=Η ενσωματωμένη μηχανή ανοίγει το αρχείο απευθείας. Δεν εμπλέκεται διακομιστής, οπότε δεν είναι διαθέσιμα αντίγραφα ασφαλείας, επαναφορά, έλεγχος εγκυρότητας και διαχείριση χρηστών, και μόνο ένα πρόγραμμα μπορεί να κρατά το αρχείο ανοιχτό.
+
+password.none=Ερώτηση κάθε φορά (συνιστάται)
+password.session=Απομνημόνευση για αυτήν τη συνεδρία
+
+dlgOpenDatabase.title=Επιλέξτε το αρχείο της βάσης δεδομένων
+dlgOpenClient.title=Επιλέξτε τη βιβλιοθήκη πελάτη Firebird
+
+; --- SQL editor -----------------------------------------------------------
+sql.execute=Εκτέλεση (F5)
+sql.executeScript=Εκτέλεση σεναρίου (F9)
+sql.commit=Οριστικοποίηση
+sql.rollback=Αναίρεση
+sql.history=Ιστορικό (Ctrl+H)
+sql.open=Άνοιγμα...
+sql.save=Αποθήκευση...
+sql.export=Εξαγωγή...
+sql.openTitle=Άνοιγμα σεναρίου
+sql.saveTitle=Αποθήκευση σεναρίου
+sql.exportTitle=Εξαγωγή αποτελεσμάτων
+sql.opened=Άνοιξε το %s
+sql.saved=Αποθηκεύτηκε το %s
+sql.exported=Εξήχθησαν %d γραμμές ως %s στο %s
+sql.committed=Οριστικοποιήθηκε.
+sql.rolledBack=Αναιρέθηκε.
+sql.noTransaction=Καμία συναλλαγή
+sql.transactionOpen=Ανοιχτή συναλλαγή — μη οριστικοποιημένες αλλαγές
+sql.notConnected=Χωρίς σύνδεση
+sql.nothingToExport=Εκτελέστε πρώτα ένα ερώτημα.
+sql.confirmReplace=Ο επεξεργαστής έχει μη αποθηκευμένες αλλαγές. Να αντικατασταθούν από το αρχείο;
+sql.tabCaption=SQL - %s
+
+status.noConnection=Χωρίς σύνδεση
+status.notConnected=Χωρίς σύνδεση
+
+; --- statement history ----------------------------------------------------
+history.use=Χρήση
+history.clear=Καθαρισμός ιστορικού
+history.filter=Περιέχει
+history.ok=επιτυχής
+history.failed=ΑΠΕΤΥΧΕ
+history.confirmClear=Να διαγραφούν και οι %d απομνημονευμένες εντολές;
+
+; --- data grid ------------------------------------------------------------
+grid.title=Δεδομένα
+grid.commit=Οριστικοποίηση
+grid.rollback=Αναίρεση
+grid.refresh=Ανανέωση
+grid.insert=Εισαγωγή γραμμής
+grid.delete=Διαγραφή γραμμής
+grid.export=Εξαγωγή...
+grid.exportTitle=Εξαγωγή γραμμών
+grid.exported=Εξήχθησαν %d γραμμές στο %s
+grid.noData=Χωρίς δεδομένα.
+grid.editable=Επεξεργάσιμο.
+grid.uncommitted=Επεξεργάσιμο. Οι αλλαγές δεν αποθηκεύονται μέχρι να πατήσετε Οριστικοποίηση.
+grid.editing=Επεξεργασία γραμμής — μετακινηθείτε από αυτήν ή πατήστε Οριστικοποίηση για να γραφτεί.
+grid.readOnly=Μόνο για ανάγνωση: %s
+grid.confirmDelete=Να διαγραφεί η τρέχουσα γραμμή;
+grid.confirmRefresh=Η ανανέωση απορρίπτει τις μη οριστικοποιημένες αλλαγές. Συνέχεια;
+grid.confirmRollback=Να απορριφθεί κάθε αλλαγή από την τελευταία οριστικοποίηση;
+
+; --- BLOB editor ----------------------------------------------------------
+blob.text=Κείμενο
+blob.hex=Δεκαεξαδικό
+blob.image=Εικόνα
+blob.load=Φόρτωση από αρχείο...
+blob.save=Αποθήκευση σε αρχείο...
+blob.loadTitle=Φόρτωση BLOB από αρχείο
+blob.saveTitle=Αποθήκευση BLOB σε αρχείο
+blob.info=%s, %d byte
+blob.readOnly=μόνο για ανάγνωση
+blob.binaryNotEditable=δυαδικό περιεχόμενο: αντικαταστήστε το με Φόρτωση από αρχείο
+blob.imageFailed=Η εικόνα δεν ήταν δυνατό να εμφανιστεί: %s
+
+; --- execute procedure ----------------------------------------------------
+exec.param=Παράμετρος
+exec.type=Τύπος
+exec.direction=Κατεύθυνση
+exec.value=Τιμή
+exec.execute=Εκτέλεση
+exec.commit=Οριστικοποίηση
+exec.rollback=Αναίρεση
+exec.results=Αποτελέσματα
+exec.statement=Εντολή
+exec.selectable=Διαδικασία επιλογής — καλείται με SELECT
+exec.executable=Εκτελέσιμη διαδικασία — καλείται με EXECUTE PROCEDURE
+exec.confirmDiscard=Η διαδικασία εκτελέστηκε αλλά η εργασία της δεν έχει οριστικοποιηθεί.
+
+; --- maintenance ----------------------------------------------------------
+maint.server=Διακομιστής
+maint.database=Βάση δεδομένων
+maint.user=Χρήστης
+maint.password=Κωδικός πρόσβασης
+maint.options=Επιλογές
+maint.start=Έναρξη
+maint.cancel=Ακύρωση
+maint.running=Εκτελείται...
+maint.stopping=Διακοπή...
+maint.finished=Ολοκληρώθηκε.
+maint.failed=Απέτυχε.
+maint.cancelled=Διακόπηκε από τον χρήστη.
+maint.cancelledNote=*** Διακόπηκε. Ό,τι είχε ήδη γραφτεί από την εντολή — ένα αντίγραφο ασφαλείας, μια μισοεπαναφερμένη βάση — είναι ελλιπές και δεν πρέπει να θεωρηθεί αξιόπιστο.
+maint.needPassword=Πληκτρολογήστε πρώτα τον κωδικό πρόσβασης.
+maint.saveOutput=Αποθήκευση εξόδου...
+maint.savedTo=Αποθηκεύτηκε στο %s
+maint.serverPaths=Κάθε όνομα αρχείου παρακάτω είναι διαδρομή στον διακομιστή, όχι σε αυτό το μηχάνημα.
+maint.verbose=Αναφορά κάθε βήματος
+maint.pageSize=Μέγεθος σελίδας
+maint.pageBuffers=Buffer σελίδων
+
+maint.backup=Αντίγραφο ασφαλείας
+maint.backupFile=Αρχείο αντιγράφου
+maint.bkIgnoreChecksums=Παράβλεψη εσφαλμένων αθροισμάτων ελέγχου
+maint.bkIgnoreLimbo=Παράβλεψη εκκρεμών συναλλαγών
+maint.bkMetadataOnly=Μόνο μεταδεδομένα, χωρίς δεδομένα
+maint.bkNoGarbage=Χωρίς αποκομιδή απορριμμάτων (ταχύτερο)
+maint.bkNonTransportable=Μη μεταφέρσιμη μορφή
+maint.bkConvertExternal=Μετατροπή εξωτερικών πινάκων σε εσωτερικούς
+maint.bkNoDbTriggers=Να μην ενεργοποιηθούν τα εναύσματα της βάσης
+
+maint.restore=Επαναφορά
+maint.rsReplace=Αντικατάσταση της υπάρχουσας βάσης (την καταστρέφει)
+maint.rsDeactivateIndexes=Τα ευρετήρια να μείνουν ανενεργά
+maint.rsNoShadow=Να μην αναδημιουργηθούν τα shadow
+maint.rsNoValidity=Να μην επαναφερθούν οι περιορισμοί εγκυρότητας
+maint.rsOneRelation=Οριστικοποίηση μετά από κάθε πίνακα
+maint.rsUseAllSpace=Πλήρης συμπλήρωση των σελίδων
+maint.rsMetadataOnly=Μόνο μεταδεδομένα, χωρίς δεδομένα
+
+maint.validate=Έλεγχος εγκυρότητας
+maint.validateMode=Είδος
+maint.vlFull=Έλεγχος και των τμημάτων εγγραφών (πιο αργό)
+maint.vlCheckDb=Έλεγχος χωρίς επιδιόρθωση
+maint.vlIgnoreChecksum=Παράβλεψη εσφαλμένων αθροισμάτων ελέγχου
+maint.vlKillShadows=Αφαίρεση μη διαθέσιμων shadow
+maint.vlMend=Επιδιόρθωση: σήμανση κατεστραμμένων εγγραφών ως διαγραμμένων (ΧΑΝΟΝΤΑΙ ΔΕΔΟΜΕΝΑ)
+maint.vlStructures=Έλεγχος δομών εγγραφών και σελίδων
+maint.vlWarning=Ο πλήρης έλεγχος απαιτεί αποκλειστική πρόσβαση: κάθε άλλη σύνδεση πρέπει να έχει τερματιστεί. Ο έλεγχος σε λειτουργία εκτελείται σε ζωντανή βάση αλλά δεν επιδιορθώνει τίποτα.
+
+maint.sweep=Σάρωση
+maint.sweepExplain=Η σάρωση αφαιρεί τις εκδόσεις εγγραφών που άφησαν πίσω τους συναλλαγές που δεν ολοκληρώθηκαν ποτέ. Διαβάζει κάθε σελίδα, οπότε είναι αργή σε μεγάλη βάση και ανταγωνίζεται την πραγματική εργασία — αλλά δεν χάνει τίποτα.
+
+maint.statistics=Στατιστικά
+maint.stHeader=Σελίδα κεφαλίδας (γρήγορο, και συνήθως αρκετό)
+maint.stData=Σελίδες δεδομένων (διαβάζει όλη τη βάση)
+maint.stIndex=Στατιστικά ευρετηρίων
+maint.stSystem=Να συμπεριληφθούν οι πίνακες συστήματος
+
+maint.serverLog=Αρχείο καταγραφής διακομιστή
+maint.serverLogExplain=Ανακτά το firebird.log από τον διακομιστή. Διαβάζεται ολόκληρο το αρχείο: το Services API δεν προσφέρει τρόπο να ζητηθούν μόνο οι τελευταίες γραμμές.
+
+; --- user management ------------------------------------------------------
+user.details=Χρήστης
+user.name=Όνομα χρήστη
+user.fullName=Πλήρες όνομα
+user.firstName=Όνομα
+user.middleName=Πατρώνυμο
+user.lastName=Επώνυμο
+user.confirm=Επιβεβαίωση
+user.active=Ενεργός
+user.adminRole=Διαχειριστής
+user.plugin=Πρόσθετο
+user.new=Νέος
+user.save=Αποθήκευση
+user.delete=Διαγραφή
+user.count=%d χρήστες
+user.saved=Αποθηκεύτηκε ο %s.
+user.deleted=Διαγράφηκε ο %s.
+user.failed=Απέτυχε.
+user.entering=Εισαγάγετε τον νέο χρήστη και πατήστε Αποθήκευση.
+user.noneVisible=Ο διακομιστής δεν εμφάνισε χρήστες. Μόνο ένας διαχειριστής βλέπει τους λογαριασμούς των άλλων.
+user.passwordNote=Αφήστε τον κωδικό κενό για να διατηρηθεί ο τρέχων. Το Firebird δεν επιστρέφει ποτέ κωδικό, οπότε δεν υπάρχει τίποτα να εμφανιστεί εδώ.
+user.sourceSql=Μέσω της συνδεδεμένης βάσης: είναι ορατά όλα τα πρόσθετα διαχείρισης χρηστών.
+user.sourceServices=Μέσω του Services API: είναι ορατό μόνο το πρώτο πρόσθετο διαχείρισης χρηστών του διακομιστή, και η ένδειξη ενεργού δεν αναφέρεται.
+
+; --- connected users ------------------------------------------------------
+attach.id=Σύνδεση
+attach.role=Ρόλος
+attach.address=Διεύθυνση
+attach.process=Πρόγραμμα πελάτη
+attach.connectedAt=Χρόνος σύνδεσης
+attach.state=Κατάσταση
+attach.session=Συνεδρία
+attach.stateActive=Εκτελείται
+attach.stateIdle=Αδρανής
+attach.thisSession=Αυτή
+attach.disconnect=Αποσύνδεση
+attach.disconnected=Αποσυνδέθηκε.
+attach.failed=Απέτυχε.
+attach.count=%d ενεργές συνδέσεις.
+attach.confirm=Να αποσυνδεθεί ο %s; Ό,τι εκτελεί αναιρείται.
+attach.warning=Η αποσύνδεση τερματίζει τη σύνδεση αμέσως και αναιρεί ό,τι εκτελούσε. Ο πελάτης δεν ερωτάται και δεν μπορεί να αρνηθεί.
+
+; --- transaction recovery -------------------------------------------------
+limbo.id=Συναλλαγή
+limbo.type=Τύπος
+limbo.state=Κατάσταση
+limbo.hostSite=Κόμβος
+limbo.remoteSite=Απομακρυσμένος κόμβος
+limbo.remoteDatabase=Απομακρυσμένη βάση
+limbo.advice=Σύσταση
+limbo.action=Ενέργεια
+limbo.commit=Οριστικοποίηση
+limbo.rollback=Αναίρεση
+limbo.useAdvice=Χρήση σύστασης
+limbo.setAction=Για την επιλεγμένη συναλλαγή:
+limbo.apply=Εφαρμογή
+limbo.decideBy=Απόφαση κατά
+limbo.output=Έξοδος διακομιστή
+limbo.perTransaction=Την ενέργεια που επιλέχθηκε για κάθε συναλλαγή
+limbo.commitAll=Οριστικοποίηση όλων
+limbo.rollbackAll=Αναίρεση όλων
+limbo.recoverTwoPhase=Ο διακομιστής να ολοκληρώσει την οριστικοποίηση δύο φάσεων
+limbo.singleDatabase=Μία βάση
+limbo.multiDatabase=Πολλαπλές βάσεις
+limbo.stateLimbo=Σε εκκρεμότητα
+limbo.stateCommit=Οριστικοποιήθηκε αλλού
+limbo.stateRollback=Αναιρέθηκε αλλού
+limbo.stateUnknown=Άγνωστη
+limbo.noAdvice=Καμία
+limbo.none=Καμία συναλλαγή δεν είναι σε εκκρεμότητα.
+limbo.noneLeft=Δεν είχε μείνει τίποτα σε εκκρεμότητα όταν έγινε το αίτημα.
+limbo.notListed=Πληκτρολογήστε τον κωδικό και πατήστε Ανανέωση για να εμφανιστούν οι εκκρεμείς συναλλαγές.
+limbo.count=%d συναλλαγές σε εκκρεμότητα.
+limbo.resolved=Επιλύθηκαν %d συναλλαγές.
+limbo.failed=Απέτυχε.
+limbo.confirm=Να επιλυθούν και οι %d συναλλαγές της λίστας; Η ενέργεια δεν αναιρείται.
+limbo.allOrNothing=Η εφαρμογή επιλύει κάθε συναλλαγή της λίστας και δεν αναιρείται. Για να αφήσετε κάποια σε εκκρεμότητα, μην εφαρμόσετε καθόλου.
+
+; --- import registrations -------------------------------------------------
+import.colSource=Βρέθηκε σε
+import.colKind=Είδος
+import.colName=Όνομα
+import.colDetail=Διεύθυνση ή διαδρομή
+import.colStatus=Κατάσταση
+import.kindServer=Διακομιστής
+import.kindDatabase=Βάση δεδομένων
+import.localServer=Τοπικός
+import.alreadyRegistered=Ήδη καταχωρισμένο
+import.selectAll=Επιλογή όλων
+import.selectNone=Καμία επιλογή
+import.import=Εισαγωγή
+import.found=Βρέθηκαν %d βάσεις δεδομένων.
+import.done=Εισήχθησαν %d βάσεις δεδομένων. Οι κωδικοί πρόσβασης δεν εισήχθησαν: θα σας ζητηθεί κωδικός την πρώτη φορά που θα συνδεθείτε.
+import.failed=Απέτυχε.
+import.nothingTicked=Δεν έχει επιλεγεί τίποτα, οπότε δεν υπάρχει τίποτα για εισαγωγή.
+import.nothingFound=Δεν υπάρχει τίποτα για εισαγωγή. Δεν βρέθηκε αρχείο καταχωρίσεων FlameRobin ούτε καταχωρίσεις IBConsole στο μητρώο για αυτόν τον χρήστη.
+import.sources=Διαβάζονται από το fr_databases.conf του FlameRobin και από τις καταχωρίσεις του IBConsole στο μητρώο. Κανένα από τα δύο δεν τροποποιείται, και οι κωδικοί πρόσβασης δεν εισάγονται ποτέ.
+
+; --- DDL: preview, drop, new, alter ---------------------------------------
+ddl.preview=Εντολή
+ddl.execute=Εκτέλεση
+ddl.failed=Απέτυχε.
+ddl.nothingToRun=Δεν υπάρχει τίποτα προς εκτέλεση.
+ddl.dropCaption=Διαγραφή
+ddl.dropWhat=Διαγραφή του %s από τη βάση δεδομένων.
+ddl.dropWarning=Η ενέργεια δεν αναιρείται, και ό,τι εξαρτάται από αυτό θα πάψει να λειτουργεί. Το Firebird αρνείται τη διαγραφή όταν κάτι άλλο το χρειάζεται ακόμη.
+ddl.editorTab=DDL - %s
+
+new.captionFor=Νέο: %s
+new.table=Πίνακας
+new.domain=Τομέας
+new.index=Ευρετήριο
+new.sequence=Ακολουθία
+new.exception=Εξαίρεση
+new.role=Ρόλος
+new.name=Όνομα
+new.type=Τύπος
+new.columns=Στήλες
+new.primaryKey=Πρωτεύον κλειδί
+new.notNull=Μη κενό
+new.default=Προεπιλογή
+new.check=Έλεγχος
+new.collation=Ταξινόμηση
+new.computedBy=Υπολογιζόμενο από
+new.onTable=Στον πίνακα
+new.unique=Μοναδικό
+new.descending=Φθίνουσα
+new.startValue=Αρχική τιμή
+new.message=Μήνυμα
+new.colName=Όνομα
+new.colType=Τύπος
+new.colNotNull=Μη κενό
+new.colDefault=Προεπιλογή
+new.colComputed=Υπολογιζόμενο από
+new.tableHint=Μία στήλη ανά γραμμή· οι κενές γραμμές αγνοούνται. Το πρωτεύον κλειδί είναι λίστα ονομάτων στηλών χωρισμένων με κόμμα. Μια υπολογιζόμενη στήλη δεν δέχεται ούτε προεπιλογή ούτε NOT NULL.
+new.domainHint=Η συνθήκη ελέγχου γράφεται χωρίς το περιβάλλον CHECK ( ), και αναφέρεται στην ελεγχόμενη τιμή ως VALUE.
+new.indexHint=Οι στήλες χωρίζονται με κόμμα. Μια έκφραση στο «Υπολογιζόμενο από» τις αντικαθιστά και δημιουργεί ευρετήριο στην έκφραση.
+new.sequenceHint=Αρχική τιμή διαφορετική από το μηδέν αποτελεί δεύτερη εντολή. Στο Firebird 4 και νεότερο, η τιμή που πληκτρολογείτε είναι ο επόμενος αριθμός που θα δώσει η ακολουθία· στο Firebird 3 είναι ο τελευταίος που χρησιμοποιήθηκε, οπότε ο επόμενος είναι κατά ένα μεγαλύτερος.
+new.exceptionHint=Το μήνυμα είναι το προεπιλεγμένο κείμενο που εγείρεται με την εξαίρεση. Τυχόν απόστροφος σε αυτό διαφεύγει αυτόματα.
+new.roleHint=Ένας ρόλος δεν έχει τίποτα άλλο να οριστεί κατά τη δημιουργία. Το τι επιτρέπεται να κάνει προκύπτει από το GRANT στη συνέχεια.
+
+alter.caption=Τροποποίηση: %s
+alter.notFound=Ο διακομιστής δεν επέστρεψε ορισμό για το %s. Μπορεί να έχει διαγραφεί από την τελευταία ανάγνωση του δέντρου.
+alter.domainHint=Γράφεται μόνο ό,τι αλλάξετε. Η αλλαγή του τύπου επανελέγχει κάθε τιμή σε κάθε πίνακα που χρησιμοποιεί αυτόν τον τομέα, κάτι που σε μεγάλο πίνακα δεν είναι γρήγορο.
+alter.indexHint=Μόνο η ένδειξη ενεργού μπορεί να τροποποιηθεί. Η αλλαγή των στηλών ή της μοναδικότητας ενός ευρετηρίου σημαίνει διαγραφή και εκ νέου δημιουργία.
+alter.sequenceHint=Στο Firebird 4 και νεότερο, η τιμή που πληκτρολογείτε είναι ο επόμενος αριθμός που θα δοθεί· στο Firebird 3 είναι ο τελευταίος που χρησιμοποιήθηκε, οπότε ο επόμενος είναι κατά ένα μεγαλύτερος. Η μείωσή της κάτω από γραμμές που ήδη υπάρχουν θα δώσει κλειδιά που είναι ήδη πιασμένα.
+
+; --- preferences ----------------------------------------------------------
+pref.general=Γενικά
+pref.language=Γλώσσα
+pref.showSystem=Εμφάνιση αντικειμένων συστήματος στο δέντρο
+pref.showLog=Εμφάνιση του πίνακα καταγραφής
+pref.editor=Επεξεργαστής
+pref.fontName=Γραμματοσειρά
+pref.fontSize=Μέγεθος
+pref.editorNote=Η γραμματοσειρά ισχύει για τις καρτέλες επεξεργαστή που θα ανοίξουν από εδώ και πέρα. Οι ήδη ανοιχτές καρτέλες διατηρούν τη γραμματοσειρά με την οποία δημιουργήθηκαν.
+pref.data=Δεδομένα
+pref.rowLimit=Γραμμές προς ανάκτηση
+pref.dataNote=Πόσες γραμμές ζητά η σελίδα δεδομένων από έναν πίνακα. Ο πίνακας δεδομένων προορίζεται για την επισκόπηση γραμμών, όχι για τη διατήρηση όλων· αυξήστε το μόνο όταν γνωρίζετε ότι ο πίνακας είναι μικρός.
+pref.defaults=Επαναφορά προεπιλογών
+
+; --- extract, about -------------------------------------------------------
+extract.tabCaption=Μεταδεδομένα - %s
+about.title=Περί IBQConsole
+about.text=IBQConsole
+
+; --- messages -------------------------------------------------------------
+msg.passwordPrompt=Κωδικός πρόσβασης για %s στο %s:
+msg.passwordNeeded=Ο διακομιστής χρειάζεται κωδικό πρόσβασης για να κάνει οτιδήποτε.
+msg.passwordsDiffer=Οι δύο κωδικοί δεν είναι ίδιοι.
+msg.hostRequired=Ένας διακομιστής χρειάζεται όνομα ή διεύθυνση.
+msg.portRange=Η θύρα πρέπει να είναι μεταξύ 1 και 65535.
+msg.noServerSelected=Επιλέξτε πρώτα διακομιστή, ή επιλέξτε τον ενσωματωμένο τύπο σύνδεσης.
+msg.serverAlreadyRegistered=Ένας διακομιστής στο %s θύρα %d είναι ήδη καταχωρισμένος.
+msg.databaseAlreadyRegistered=Μια βάση με τη διαδρομή "%s" είναι ήδη καταχωρισμένη σε αυτόν τον διακομιστή.
+msg.confirmUnregisterServer=Να καταργηθεί η καταχώριση του "%s";
+msg.confirmUnregisterDatabase=Να καταργηθεί η καταχώριση του "%s";
+msg.saveRegistrationsFailed=Οι καταχωρίσεις δεν ήταν δυνατό να αποθηκευτούν:$nl%s
+msg.clientDefault=Χρησιμοποιείται η προεπιλογή του συστήματος: το πρώτο %s που βρίσκεται στη διαδρομή αναζήτησης.
+msg.clientMissing=Αυτό το αρχείο δεν υπάρχει.
+msg.clientNotFound=Η βιβλιοθήκη πελάτη "%s" δεν υπάρχει.
+msg.clientVersion=Έκδοση πελάτη Firebird %s
+msg.clientUnknownVersion=Η έκδοση αυτής της βιβλιοθήκης δεν ήταν δυνατό να διαβαστεί.
+msg.notImplemented=Το %s δεν είναι ακόμη διαθέσιμο σε αυτήν την έκδοση.
+msg.editorNeedsConnection=Επιλέξτε πρώτα μια συνδεδεμένη βάση δεδομένων.
+msg.extractNeedsConnection=Επιλέξτε πρώτα μια συνδεδεμένη βάση δεδομένων.
+msg.scriptNeedsObject=Επιλέξτε πρώτα ένα αντικείμενο σε συνδεδεμένη βάση δεδομένων.
+msg.scriptNotApplicable=Το %s δεν μπορεί να δημιουργηθεί για το "%s".
+msg.executeNeedsRoutine=Επιλέξτε πρώτα μια διαδικασία ή συνάρτηση σε συνδεδεμένη βάση δεδομένων.
+msg.maintenanceNeedsDatabase=Επιλέξτε πρώτα μια βάση δεδομένων στο δέντρο.
+msg.serverLogNeedsServer=Επιλέξτε πρώτα έναν διακομιστή στο δέντρο.
+msg.usersNeedServer=Επιλέξτε πρώτα έναν διακομιστή, ή μια συνδεδεμένη βάση, στο δέντρο.
+msg.attachmentsNeedConnection=Συνδεθείτε πρώτα στη βάση δεδομένων. Οι συνδέσεις διαβάζονται από την ίδια τη βάση, οπότε η εμφάνισή τους απαιτεί σύνδεση σε αυτήν.
+msg.noServicesForEmbedded=Μια ενσωματωμένη βάση δεν έχει διακομιστή, οπότε δεν έχει υπηρεσίες συντήρησης. Καταχωρίστε την κάτω από έναν διακομιστή για να τη δημιουργήσετε αντίγραφο.
+msg.userNeedsName=Ένας χρήστης χρειάζεται όνομα.
+msg.newUserNeedsPassword=Ένας νέος χρήστης χρειάζεται κωδικό πρόσβασης.
+msg.confirmDropUser=Να διαγραφεί ο χρήστης %s;
+msg.confirmMend=Η επιδιόρθωση του %s σημαίνει ότι οι κατεστραμμένες εγγραφές σημειώνονται ως διαγραμμένες. Δεδομένα που δεν μπορούν να διαβαστούν ΧΑΝΟΝΤΑΙ.
+msg.confirmReplace=Αυτό θα ΚΑΤΑΣΤΡΕΨΕΙ τη βάση δεδομένων στο %s και θα την αντικαταστήσει με το αντίγραφο ασφαλείας.
+msg.confirmStopOnClose=Αυτό θα διακόψει την εντολή που εκτελείται. Να γίνει κλείσιμο ούτως ή άλλως;
+msg.alterNeedsObject=Επιλέξτε πρώτα ένα αντικείμενο σε συνδεδεμένη βάση δεδομένων.
+msg.ddlNeedsObject=Επιλέξτε πρώτα ένα αντικείμενο σε συνδεδεμένη βάση δεδομένων.
+msg.dropNeedsObject=Επιλέξτε πρώτα ένα αντικείμενο σε συνδεδεμένη βάση δεδομένων.
+msg.newNeedsSelection=Επιλέξτε πρώτα έναν φάκελο ή ένα αντικείμενο σε συνδεδεμένη βάση δεδομένων.
+msg.noDdlForObject=Ο διακομιστής δεν επέστρεψε DDL για αυτό το αντικείμενο.
+msg.cannotDrop=Αυτό δεν είναι κάτι που θα διαγράψει το πρόγραμμα. Οι φάκελοι, οι στήλες και τα αντικείμενα συστήματος δεν είναι δικά σας για αφαίρεση.
+msg.cannotCreateHere=Αυτό το παράθυρο δημιουργεί πίνακες, τομείς, ευρετήρια, ακολουθίες, εξαιρέσεις και ρόλους. Μια όψη, διαδικασία, έναυσμα ή συνάρτηση γράφεται στον επεξεργαστή SQL: επιλέξτε ένα και χρησιμοποιήστε «Άνοιγμα DDL στον επεξεργαστή SQL» ως αφετηρία.
+msg.cannotAlterHere=Αυτό το παράθυρο τροποποιεί τομείς, ακολουθίες, εξαιρέσεις και την ένδειξη ενεργού ενός ευρετηρίου. Για οτιδήποτε άλλο χρησιμοποιήστε «Άνοιγμα DDL στον επεξεργαστή SQL» και επεξεργαστείτε την εντολή εκεί.
+
+; --- server properties ----------------------------------------------------
+srvprop.server=Διακομιστής
+srvprop.user=Χρήστης
+srvprop.password=Κωδικός πρόσβασης
+srvprop.read=Ανάγνωση
+srvprop.colName=Ιδιότητα
+srvprop.colValue=Τιμή
+srvprop.registration=Καταχώριση
+srvprop.displayName=Όνομα εμφάνισης
+srvprop.host=Διακομιστής
+srvprop.port=Θύρα
+srvprop.userName=Όνομα χρήστη
+srvprop.clientLibrary=Βιβλιοθήκη πελάτη
+srvprop.clientDefault=δεν έχει οριστεί — χρησιμοποιείται η προεπιλογή του συστήματος
+srvprop.databaseCountReg=Καταχωρισμένες βάσεις δεδομένων
+srvprop.description=Περιγραφή
+srvprop.version=Έκδοση
+srvprop.engine=Μηχανή
+srvprop.implementation=Υλοποίηση
+srvprop.serviceVersion=Πρωτόκολλο υπηρεσιών
+srvprop.baseLocation=Κατάλογος εγκατάστασης
+srvprop.lockLocation=Κατάλογος κλειδωμάτων
+srvprop.messageLocation=Αρχείο μηνυμάτων
+srvprop.securityDatabase=Βάση δεδομένων ασφαλείας
+srvprop.attachments=Συνδέσεις
+srvprop.openDatabases=Ανοιχτές βάσεις δεδομένων (%d)
+srvprop.noneOpen=Καμία
+srvprop.reading=Ανάγνωση...
+srvprop.read.ok=Έγινε ανάγνωση από τον διακομιστή.
+srvprop.read.failed=Δεν ήταν δυνατή η ανάγνωση του διακομιστή.
+srvprop.needPassword=Δώστε τον κωδικό πρόσβασης και πατήστε Ανάγνωση για να ρωτήσετε τον διακομιστή για τον εαυτό του.
+msg.serverPropsNeedServer=Επιλέξτε πρώτα έναν διακομιστή στο δέντρο.
