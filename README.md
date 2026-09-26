@@ -130,6 +130,10 @@ stays at zero warnings and zero hints.
 - Installers for Windows and Linux
 - Live testing against Firebird 6.0
 
+## License
+
+Released under the [MIT License](LICENSE).
+
 ## Author
 
 Alexandros Ntermaris
