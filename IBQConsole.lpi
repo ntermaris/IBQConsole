@@ -317,6 +317,20 @@
         <ResourceBaseClass Value="Form"/>
       </Unit>
       <Unit>
+        <Filename Value="forms/frmConnectAs.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmIbqConnectAs"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="forms/frmCreateDatabase.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmIbqCreateDatabase"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
         <Filename Value="forms/frmDdlPreview.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmIbqDdlPreview"/>

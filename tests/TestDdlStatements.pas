@@ -357,6 +357,83 @@ begin
   WriteLn;
 end;
 
+{ CREATE DATABASE: clause order, quoting, and what is left out. }
+procedure TestCreateDatabase;
+begin
+  WriteLn('CREATE DATABASE');
+  CheckEqual('every clause, in the order Firebird wants',
+    CreateDatabaseStatement('localhost/3050:C:\db\new.fdb', 'SYSDBA',
+      'masterkey', 8192, 'utf8'),
+    'CREATE DATABASE ''localhost/3050:C:\db\new.fdb'' USER ''SYSDBA'' '
+    + 'PASSWORD ''masterkey'' PAGE_SIZE 8192 DEFAULT CHARACTER SET UTF8');
+  CheckEqual('empty values leave their clauses out',
+    CreateDatabaseStatement('/data/x.fdb', '', '', 0, ''),
+    'CREATE DATABASE ''/data/x.fdb''');
+  CheckEqual('an apostrophe in the path or password is doubled',
+    CreateDatabaseStatement('C:\O''Brien\x.fdb', 'U', 'it''s', 0, ''),
+    'CREATE DATABASE ''C:\O''''Brien\x.fdb'' USER ''U'' '
+    + 'PASSWORD ''it''''s''');
+  Check(IsValidPageSize(0), 'page size 0 means the server default');
+  Check(IsValidPageSize(16384), '16384 is a page size');
+  Check(not IsValidPageSize(1024), '1024 is too small for Firebird 3+');
+  Check(not IsValidPageSize(5000), '5000 is not a power of two');
+  WriteLn;
+end;
+
+{ Script as ALTER: which CREATE is rewritten, and which is left alone. }
+procedure TestCreateOrAlter;
+const
+  Nl = LineEnding;
+var
+  Ddl: string;
+begin
+  WriteLn('CREATE OR ALTER');
+
+  CheckEqual('a view is rewritten',
+    CreateOrAlterScript(mntView, 'CREATE VIEW V (A) AS SELECT 1 FROM T;'),
+    'CREATE OR ALTER VIEW V (A) AS SELECT 1 FROM T;');
+  CheckEqual('the keyword is matched whatever its case',
+    CreateOrAlterScript(mntView, 'create view V AS SELECT 1 FROM T;'),
+    'CREATE OR ALTER VIEW V AS SELECT 1 FROM T;');
+
+  Ddl := 'SET TERM ^ ;' + Nl + 'CREATE PROCEDURE P' + Nl + 'AS' + Nl +
+    'BEGIN' + Nl + '  EXECUTE STATEMENT ''CREATE PROCEDURE X AS BEGIN END'';' +
+    Nl + 'END^' + Nl + 'SET TERM ; ^';
+  CheckEqual('a procedure is rewritten after SET TERM, and a CREATE inside '
+    + 'its body is not',
+    CreateOrAlterScript(mntProcedure, Ddl),
+    'SET TERM ^ ;' + Nl + 'CREATE OR ALTER PROCEDURE P' + Nl + 'AS' + Nl +
+    'BEGIN' + Nl + '  EXECUTE STATEMENT ''CREATE PROCEDURE X AS BEGIN END'';' +
+    Nl + 'END^' + Nl + 'SET TERM ; ^');
+
+  CheckEqual('leading blanks are kept',
+    CreateOrAlterScript(mntTriggerDML, '  CREATE TRIGGER TR FOR T'),
+    '  CREATE OR ALTER TRIGGER TR FOR T');
+  CheckEqual('only the first CREATE is rewritten',
+    CreateOrAlterScript(mntException,
+      'CREATE EXCEPTION E ''a'';' + Nl + 'CREATE EXCEPTION F ''b'';'),
+    'CREATE OR ALTER EXCEPTION E ''a'';' + Nl + 'CREATE EXCEPTION F ''b'';');
+
+  Ddl := 'CREATE PACKAGE PK AS BEGIN END^' + Nl +
+    'CREATE PACKAGE BODY PK AS BEGIN END^';
+  CheckEqual('a package header is altered and its body recreated',
+    CreateOrAlterScript(mntPackage, Ddl),
+    'CREATE OR ALTER PACKAGE PK AS BEGIN END^' + Nl +
+    'RECREATE PACKAGE BODY PK AS BEGIN END^');
+
+  CheckEqual('a name that merely starts with the keyword is not a match',
+    CreateOrAlterScript(mntPackage, 'CREATE PACKAGES_LOG'), '');
+  CheckEqual('a table has no CREATE OR ALTER',
+    CreateOrAlterScript(mntTable, 'CREATE TABLE T (A INTEGER);'), '');
+  Check(not CanScriptAlter(mntGenerator),
+    'a sequence is not offered: CREATE OR ALTER SEQUENCE restarts it');
+  Check(not CanScriptAlter(mntDomain), 'a domain has no CREATE OR ALTER');
+  Check(CanScriptAlter(mntFunctionSQL), 'a PSQL function can be altered');
+  CheckEqual('DDL with no CREATE for the kind yields nothing',
+    CreateOrAlterScript(mntView, 'COMMENT ON VIEW V IS ''x'';'), '');
+  WriteLn;
+end;
+
 begin
   Failures := 0;
   WriteLn('Generated DDL');
@@ -368,6 +445,8 @@ begin
   TestStrippers;
   TestIndexes;
   TestTables;
+  TestCreateOrAlter;
+  TestCreateDatabase;
 
   if Failures = 0 then
     WriteLn('all DDL checks passed')

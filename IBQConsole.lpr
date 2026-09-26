@@ -33,6 +33,8 @@ uses
   frmPreferences,
   frmServerProperties,
   frmObjectEditor,
+  frmConnectAs,
+  frmCreateDatabase,
   // core
   LanguageHandle,
   LangFileIO,

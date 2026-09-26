@@ -5,7 +5,7 @@
   Author:      Alexandros Ntermaris
   Created:     2026-08-20
   Depends on:  SysUtils, MetaItem, MetaDatabase, MetaTypes, Identifier,
-               ServerRegistration
+               ServerRegistration, ServiceConnection
 ==============================================================================}
 unit MetaServer;
 
@@ -36,6 +36,20 @@ type
     { True once the Services API has been reached on this server. }
     function IsConnected: Boolean;
 
+    { Logs in to the server's Services Manager, reads its version and marks
+      the node connected.
+
+      Parameters:
+        APassword - The password for the registration's user name. Used for
+                    this call only and never kept.
+
+      Raises:
+        EIbqDatabaseError - The server refused or could not be reached. }
+    procedure Connect(const APassword: string);
+    { Disconnects every connected database under this server, then marks the
+      server itself disconnected. Safe when not connected. }
+    procedure Disconnect;
+
     { Records that the server responded, with the version string it reported. }
     procedure MarkConnected(const AVersionText: string);
     { Records that the server is no longer reachable or was logged out of. }
@@ -48,6 +62,9 @@ type
   end;
 
 implementation
+
+uses
+  ServiceConnection;
 
 {------------------------------------------------------------------------------
   TMetaServer.CreateForRegistration
@@ -89,6 +106,77 @@ end;
 function TMetaServer.IsConnected: Boolean;
 begin
   Result := FConnected;
+end;
+
+{------------------------------------------------------------------------------
+  TMetaServer.Connect
+  ----------------------------------------------------------------------------
+  Logs in to the Services Manager and records the version it reports.
+
+  Parameters:
+    APassword - The password for the registration's user name.
+
+  Raises:
+    EIbqDatabaseError - The server refused or could not be reached; the
+                        message carries the full status vector.
+
+  Notes:
+    The service attachment is closed again as soon as the version is read.
+    "Connected" here means the credentials were accepted and the server
+    answered, not that an attachment is held: an idle service attachment ties
+    up the Services Manager, which is also how a running maintenance task is
+    cancelled, and the password is never kept to reopen one later. Every
+    server command therefore still asks for the password itself, as
+    SPECIFICATION.md 9.1 requires.
+------------------------------------------------------------------------------}
+procedure TMetaServer.Connect(const APassword: string);
+var
+  Service: TServiceConnection;
+  Info: TServerInfo;
+begin
+  if FConnected then
+    Exit;
+
+  Service := TServiceConnection.Create(FRegistration);
+  try
+    Service.Connect(APassword);
+    Info := Service.Info;
+    Service.Disconnect;
+  finally
+    Service.Free;
+  end;
+
+  MarkConnected(Info.VersionText);
+end;
+
+{------------------------------------------------------------------------------
+  TMetaServer.Disconnect
+  ----------------------------------------------------------------------------
+  Disconnects the databases under this server and then the server itself.
+
+  Notes:
+    Only children that were already loaded are visited. A server whose
+    databases were never listed has none connected, and loading them here
+    just to find that out would be wasted work.
+------------------------------------------------------------------------------}
+procedure TMetaServer.Disconnect;
+var
+  I: Integer;
+  Database: TMetaDatabase;
+begin
+  if ChildrenState = mlsLoaded then
+  begin
+    for I := 0 to ChildCount - 1 do
+    begin
+      if not (Child[I] is TMetaDatabase) then
+        Continue;
+      Database := TMetaDatabase(Child[I]);
+      if Database.IsConnected then
+        Database.Disconnect;
+    end;
+  end;
+
+  MarkDisconnected;
 end;
 
 {------------------------------------------------------------------------------

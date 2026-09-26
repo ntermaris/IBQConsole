@@ -113,6 +113,25 @@ type
     ComputedBy: string;
   end;
 
+  { The definition statements Object > Script as offers beside the data ones
+    of TScriptKind. }
+  TDdlScriptKind = (
+    dskCreate,     // the object's CREATE statement, as IBExtract renders it
+    dskAlter,      // the same, rewritten to CREATE OR ALTER
+    dskDrop        // DROP <kind> <name>
+  );
+
+{ Returns the menu caption for a definition script kind. }
+function DdlScriptKindCaption(AKind: TDdlScriptKind): string;
+
+{ Returns True when CreateOrAlterScript can rewrite this kind's CREATE. }
+function CanScriptAlter(ANodeType: TMetaNodeType): Boolean;
+
+{ Rewrites an object's CREATE statement into CREATE OR ALTER form, or returns
+  an empty string when the kind has no such form or no CREATE was found. }
+function CreateOrAlterScript(ANodeType: TMetaNodeType;
+  const ACreateDdl: string): string;
+
 { Returns AValue as a Firebird string literal, with quotes doubled. }
 function SqlStringLiteral(const AValue: string): string;
 
@@ -173,6 +192,14 @@ function CreateIndexStatement(const AIndex: TDdlIndex): string;
 
 { Returns the CREATE TABLE statement for ATable. }
 function CreateTableStatement(const ATable: TDdlTable): string;
+
+{ Returns the CREATE DATABASE statement for a new database file. }
+function CreateDatabaseStatement(const AConnectionString, AUserName,
+  APassword: string; APageSize: Integer;
+  const ACharacterSet: string): string;
+
+{ Returns True for a page size Firebird accepts, or 0 for its default. }
+function IsValidPageSize(APageSize: Integer): Boolean;
 
 { Returns 'ALTER INDEX "X" ACTIVE' or '... INACTIVE'. }
 function AlterIndexActiveStatement(const AName: TIdentifier;
@@ -478,6 +505,256 @@ begin
     Exit;
   end;
   Result := 'DROP ' + Keyword + ' ' + AName.QualifiedQuoted;
+end;
+
+{------------------------------------------------------------------------------
+  DdlScriptKindCaption
+  ----------------------------------------------------------------------------
+  Returns the menu caption for a definition script kind.
+
+  Parameters:
+    AKind - Which statement.
+
+  Returns:
+    'CREATE', 'ALTER' or 'DROP'. SQL keywords, and so not translated - the
+    same reasoning as ScriptKindCaption.
+------------------------------------------------------------------------------}
+function DdlScriptKindCaption(AKind: TDdlScriptKind): string;
+begin
+  case AKind of
+    dskCreate: Result := 'CREATE';
+    dskAlter:  Result := 'ALTER';
+    dskDrop:   Result := 'DROP';
+  else
+    Result := '';
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  CreateOrAlterKeyword
+  ----------------------------------------------------------------------------
+  Returns the keyword that follows CREATE for a kind that has a CREATE OR
+  ALTER form.
+
+  Parameters:
+    ANodeType - Which kind of object.
+
+  Returns:
+    'VIEW', 'PROCEDURE' and so on, or an empty string.
+
+  Notes:
+    Deliberately short. A table and a domain have no CREATE OR ALTER at all.
+    A sequence has one, but it restarts the sequence at its START WITH value,
+    which on a live database is silent data corruption waiting for the next
+    insert - so it is left out on purpose, not by oversight.
+------------------------------------------------------------------------------}
+function CreateOrAlterKeyword(ANodeType: TMetaNodeType): string;
+begin
+  case ANodeType of
+    mntView:
+      Result := 'VIEW';
+    mntProcedure:
+      Result := 'PROCEDURE';
+    mntFunctionSQL:
+      Result := 'FUNCTION';
+    mntPackage:
+      Result := 'PACKAGE';
+    mntTriggerDML, mntTriggerDB, mntTriggerDDL:
+      Result := 'TRIGGER';
+    mntException:
+      Result := 'EXCEPTION';
+  else
+    Result := '';
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  CanScriptAlter
+  ----------------------------------------------------------------------------
+  Returns True when CreateOrAlterScript can rewrite this kind's CREATE.
+
+  Parameters:
+    ANodeType - Which kind of object.
+------------------------------------------------------------------------------}
+function CanScriptAlter(ANodeType: TMetaNodeType): Boolean;
+begin
+  Result := CreateOrAlterKeyword(ANodeType) <> '';
+end;
+
+{------------------------------------------------------------------------------
+  FindLineStartPhrase
+  ----------------------------------------------------------------------------
+  Finds the first line that begins with a phrase, ignoring leading blanks and
+  letter case.
+
+  Parameters:
+    AText   - The script to search.
+    APhrase - Words separated by single spaces, e.g. 'CREATE PACKAGE BODY'.
+    APos    - Receives the 1-based position of the phrase in AText.
+
+  Returns:
+    True when found. The phrase must end at a word boundary, so 'CREATE
+    PACKAGE' does not match 'CREATE PACKAGES_LOG'.
+
+  Notes:
+    Only line starts are looked at. A CREATE inside a PSQL body - in an
+    EXECUTE STATEMENT string, say - sits mid-line in IBExtract's output
+    and must not be rewritten.
+------------------------------------------------------------------------------}
+function FindLineStartPhrase(const AText, APhrase: string;
+  out APos: Integer): Boolean;
+var
+  LineStart: Integer;
+  I: Integer;
+  After: Integer;
+begin
+  Result := False;
+  APos := 0;
+  LineStart := 1;
+  while LineStart <= Length(AText) do
+  begin
+    I := LineStart;
+    while (I <= Length(AText)) and (AText[I] in [' ', #9]) do
+      Inc(I);
+
+    if SameText(Copy(AText, I, Length(APhrase)), APhrase) then
+    begin
+      After := I + Length(APhrase);
+      if (After > Length(AText)) or
+        not (AText[After] in ['A'..'Z', 'a'..'z', '0'..'9', '_', '$']) then
+      begin
+        APos := I;
+        Exit(True);
+      end;
+    end;
+
+    while (I <= Length(AText)) and (AText[I] <> #10) do
+      Inc(I);
+    LineStart := I + 1;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  CreateOrAlterScript
+  ----------------------------------------------------------------------------
+  Rewrites an object's CREATE statement into CREATE OR ALTER form.
+
+  Parameters:
+    ANodeType  - Which kind of object the DDL describes.
+    ACreateDdl - The DDL as IBExtract renders it, terminators and all.
+
+  Returns:
+    The same text with its CREATE rewritten, or an empty string when the kind
+    has no CREATE OR ALTER form or no CREATE for it was found.
+
+  Notes:
+    Only the first CREATE of the kind is rewritten; anything after it -
+    GRANTs, COMMENT ONs - is left as it is.
+
+    A package is the one kind that needs two rewrites. Its header takes
+    CREATE OR ALTER PACKAGE, but its body has no such form in any Firebird
+    version and has to be RECREATEd. The body is found first because its
+    phrase begins with the header's.
+------------------------------------------------------------------------------}
+function CreateOrAlterScript(ANodeType: TMetaNodeType;
+  const ACreateDdl: string): string;
+const
+  BodyPhrase = 'CREATE PACKAGE BODY';
+var
+  Keyword: string;
+  Phrase: string;
+  P: Integer;
+begin
+  Result := '';
+  Keyword := CreateOrAlterKeyword(ANodeType);
+  if Keyword = '' then
+  begin
+    Exit;
+  end;
+
+  Result := ACreateDdl;
+
+  if (ANodeType = mntPackage) and
+    FindLineStartPhrase(Result, BodyPhrase, P) then
+  begin
+    Result := Copy(Result, 1, P - 1) + 'RECREATE PACKAGE BODY' +
+      Copy(Result, P + Length(BodyPhrase), MaxInt);
+  end;
+
+  Phrase := 'CREATE ' + Keyword;
+  if not FindLineStartPhrase(Result, Phrase, P) then
+  begin
+    // a package whose header was not found is not a usable script either
+    Exit('');
+  end;
+  Result := Copy(Result, 1, P - 1) + 'CREATE OR ALTER ' + Keyword +
+    Copy(Result, P + Length(Phrase), MaxInt);
+end;
+
+{------------------------------------------------------------------------------
+  IsValidPageSize
+  ----------------------------------------------------------------------------
+  Returns True for a page size Firebird accepts.
+
+  Parameters:
+    APageSize - Bytes per page, or 0 to leave the choice to the server.
+
+  Returns:
+    True for 0, 4096, 8192, 16384 and 32768.
+
+  Notes:
+    32768 is Firebird 4 and later. It is accepted here and left for the
+    server to refuse on Firebird 3, whose message names the problem exactly;
+    gating it would need the version of a server not yet attached to.
+------------------------------------------------------------------------------}
+function IsValidPageSize(APageSize: Integer): Boolean;
+begin
+  case APageSize of
+    0, 4096, 8192, 16384, 32768:
+      Result := True;
+  else
+    Result := False;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  CreateDatabaseStatement
+  ----------------------------------------------------------------------------
+  Returns the CREATE DATABASE statement for a new database file.
+
+  Parameters:
+    AConnectionString - Where to create it, as the client library is given
+                        it: 'host/port:path' or a bare path.
+    AUserName         - The owner, or empty to leave it to the attachment.
+    APassword         - Their password, or empty. A caller that logs the
+                        statement passes a mask here instead.
+    APageSize         - Bytes per page, or 0 for the server's default.
+    ACharacterSet     - The default character set, or empty for NONE.
+
+  Returns:
+    One statement, without a terminator.
+
+  Notes:
+    Every value that is text is a string literal, quotes doubled: a path with
+    an apostrophe in a folder name is ordinary on Windows, and a password is
+    whatever the user chose. The character set is a bare name and is only
+    upper-cased; anything that is not one fails on the server with a message
+    that names it.
+------------------------------------------------------------------------------}
+function CreateDatabaseStatement(const AConnectionString, AUserName,
+  APassword: string; APageSize: Integer;
+  const ACharacterSet: string): string;
+begin
+  Result := 'CREATE DATABASE ' + SqlStringLiteral(AConnectionString);
+  if AUserName <> '' then
+    Result := Result + ' USER ' + SqlStringLiteral(AUserName);
+  if APassword <> '' then
+    Result := Result + ' PASSWORD ' + SqlStringLiteral(APassword);
+  if APageSize > 0 then
+    Result := Result + ' PAGE_SIZE ' + IntToStr(APageSize);
+  if Trim(ACharacterSet) <> '' then
+    Result := Result + ' DEFAULT CHARACTER SET ' +
+      UpperCase(Trim(ACharacterSet));
 end;
 
 {------------------------------------------------------------------------------

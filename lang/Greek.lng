@@ -44,6 +44,8 @@ mnuView.caption=Π&ροβολή
 mnuRefresh.caption=&Ανανέωση
 mnuShowSystem.caption=Εμφάνιση &αντικειμένων συστήματος
 mnuShowLog.caption=Εμφάνιση &καταγραφής
+mnuTreeFilter.caption=&Φίλτρο δέντρου αντικειμένων
+tree.filterHint=Φιλτράρισμα αντικειμένων κατά όνομα
 
 mnuServer.caption=&Διακομιστής
 mnuServerConnect.caption=&Σύνδεση
@@ -54,6 +56,9 @@ mnuUnregisterServer.caption=Κατάργηση καταχώρισης
 
 mnuDatabase.caption=&Βάση δεδομένων
 mnuDbConnect.caption=&Σύνδεση
+mnuDbConnectAs.caption=Σύνδεση &ως...
+mnuDbCreate.caption=Δη&μιουργία βάσης δεδομένων...
+mnuDbDrop.caption=Δια&γραφή βάσης δεδομένων...
 mnuDbDisconnect.caption=&Αποσύνδεση
 mnuUnregisterDatabase.caption=Κατάργηση καταχώρισης
 
@@ -70,6 +75,7 @@ mnuExtractMetadata.caption=Ε&ξαγωγή μεταδεδομένων...
 
 mnuObject.caption=&Αντικείμενο
 mnuObjRefresh.caption=&Ανανέωση
+mnuObjBrowseData.caption=&Περιήγηση δεδομένων
 mnuScriptAs.caption=&Δημιουργία εντολής
 mnuObjExecute.caption=&Εκτέλεση...
 mnuObjProperties.caption=&Ιδιότητες...
@@ -180,6 +186,8 @@ frmMaintenance.caption=Συντήρηση
 frmUserManager.caption=Χρήστες
 frmConnectedUsers.caption=Συνδεδεμένοι χρήστες
 frmTransactionRecovery.caption=Ανάκτηση συναλλαγών
+frmConnectAs.caption=Σύνδεση ως
+frmCreateDatabase.caption=Δημιουργία βάσης δεδομένων
 frmImportRegistrations.caption=Εισαγωγή καταχωρίσεων
 frmObjectEditor.caption=Νέο αντικείμενο
 frmPreferences.caption=Προτιμήσεις
@@ -519,12 +527,27 @@ pref.rowLimit=Γραμμές προς ανάκτηση
 pref.dataNote=Πόσες γραμμές ζητά η σελίδα δεδομένων από έναν πίνακα. Ο πίνακας δεδομένων προορίζεται για την επισκόπηση γραμμών, όχι για τη διατήρηση όλων· αυξήστε το μόνο όταν γνωρίζετε ότι ο πίνακας είναι μικρός.
 pref.defaults=Επαναφορά προεπιλογών
 
+; --- create database ------------------------------------------------------
+createdb.path=Αρχείο βάσης δεδομένων
+createdb.pathHint=Η διαδρομή όπως τη βλέπει ο διακομιστής, ή ένα ψευδώνυμο.
+createdb.pageSize=Μέγεθος σελίδας
+createdb.charset=Σύνολο χαρακτήρων
+createdb.register=Καταχώριση της νέας βάσης δεδομένων
+createdb.create=Δημιουργία
+createdb.defaultPageSize=Προεπιλογή διακομιστή
+
 ; --- extract, about -------------------------------------------------------
 extract.tabCaption=Μεταδεδομένα - %s
 about.title=Περί IBQConsole
 about.text=IBQConsole
 
 ; --- messages -------------------------------------------------------------
+msg.browseNeedsRelation=Επιλέξτε πρώτα έναν πίνακα ή μια όψη σε μια συνδεδεμένη βάση δεδομένων.
+msg.userRequired=Εισαγάγετε το όνομα χρήστη για τη σύνδεση.
+msg.createPathRequired=Εισαγάγετε τη διαδρομή του νέου αρχείου βάσης δεδομένων.
+msg.createNeedsServer=Επιλέξτε πρώτα τον διακομιστή όπου θα δημιουργηθεί η βάση δεδομένων.
+msg.dropNeedsConnection=Συνδεθείτε πρώτα στη βάση δεδομένων. Ο Firebird διαγράφει μια βάση δεδομένων μέσω μιας σύνδεσης σε αυτήν.
+msg.confirmDropDatabase=Διαγραφή της βάσης δεδομένων «%s» από τον διακομιστή;$nl$nlΤο αρχείο %s διαγράφεται, μαζί με κάθε πίνακα και όλα τα δεδομένα του. Αυτό δεν αναιρείται.$nl$nlΑφαιρείται επίσης η καταχώρισή της.
 msg.passwordPrompt=Κωδικός πρόσβασης για %s στο %s:
 msg.passwordNeeded=Ο διακομιστής χρειάζεται κωδικό πρόσβασης για να κάνει οτιδήποτε.
 msg.passwordsDiffer=Οι δύο κωδικοί δεν είναι ίδιοι.
@@ -541,7 +564,6 @@ msg.clientMissing=Αυτό το αρχείο δεν υπάρχει.
 msg.clientNotFound=Η βιβλιοθήκη πελάτη "%s" δεν υπάρχει.
 msg.clientVersion=Έκδοση πελάτη Firebird %s
 msg.clientUnknownVersion=Η έκδοση αυτής της βιβλιοθήκης δεν ήταν δυνατό να διαβαστεί.
-msg.notImplemented=Το %s δεν είναι ακόμη διαθέσιμο σε αυτήν την έκδοση.
 msg.editorNeedsConnection=Επιλέξτε πρώτα μια συνδεδεμένη βάση δεδομένων.
 msg.extractNeedsConnection=Επιλέξτε πρώτα μια συνδεδεμένη βάση δεδομένων.
 msg.scriptNeedsObject=Επιλέξτε πρώτα ένα αντικείμενο σε συνδεδεμένη βάση δεδομένων.

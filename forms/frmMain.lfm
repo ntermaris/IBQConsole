@@ -10,21 +10,56 @@
   OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '3.0.0.0'
-  object tvObjects: TTreeView
+  object pnlTree: TPanel
     Left = 0
     Height = 575
     Top = 0
     Width = 260
     Align = alLeft
-    DefaultItemHeight = 20
-    ReadOnly = True
-    RightClickSelect = True
+    BevelOuter = bvNone
+    ClientHeight = 575
+    ClientWidth = 260
     TabOrder = 0
-    OnExpanding = tvObjectsExpanding
-    OnSelectionChanged = tvObjectsSelectionChanged
-    OnDblClick = tvObjectsDblClick
-    PopupMenu = popTree
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    object pnlTreeFilter: TPanel
+      Left = 0
+      Height = 30
+      Top = 0
+      Width = 260
+      Align = alTop
+      BevelOuter = bvNone
+      ClientHeight = 30
+      ClientWidth = 260
+      TabOrder = 0
+      Visible = False
+      object edtTreeFilter: TEdit
+        Left = 3
+        Height = 23
+        Top = 3
+        Width = 254
+        Align = alClient
+        BorderSpacing.Around = 3
+        TabOrder = 0
+        TextHint = 'Filter objects by name'
+        OnChange = edtTreeFilterChange
+        OnKeyDown = edtTreeFilterKeyDown
+      end
+    end
+    object tvObjects: TTreeView
+      Left = 0
+      Height = 545
+      Top = 30
+      Width = 260
+      Align = alClient
+      DefaultItemHeight = 20
+      ReadOnly = True
+      RightClickSelect = True
+      TabOrder = 1
+      OnExpanding = tvObjectsExpanding
+      OnSelectionChanged = tvObjectsSelectionChanged
+      OnDblClick = tvObjectsDblClick
+      PopupMenu = popTree
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    end
   end
   object splTree: TSplitter
     Left = 260
@@ -148,16 +183,22 @@
         Checked = True
         OnClick = mnuShowLogClick
       end
+      object mnuTreeFilter: TMenuItem
+        AutoCheck = True
+        Caption = 'Object Tree &Filter'
+        ShortCut = 24646
+        OnClick = mnuTreeFilterClick
+      end
     end
     object mnuServer: TMenuItem
       Caption = '&Server'
       object mnuServerConnect: TMenuItem
         Caption = '&Connect'
-        OnClick = mnuNotImplementedClick
+        OnClick = mnuServerConnectClick
       end
       object mnuServerDisconnect: TMenuItem
         Caption = '&Disconnect'
-        OnClick = mnuNotImplementedClick
+        OnClick = mnuServerDisconnectClick
       end
       object mnuServerProperties: TMenuItem
         Caption = 'P&roperties...'
@@ -182,9 +223,21 @@
         Caption = '&Connect'
         OnClick = mnuDbConnectClick
       end
+      object mnuDbConnectAs: TMenuItem
+        Caption = 'Connect &As...'
+        OnClick = mnuDbConnectAsClick
+      end
       object mnuDbDisconnect: TMenuItem
         Caption = '&Disconnect'
         OnClick = mnuDbDisconnectClick
+      end
+      object mnuDbCreate: TMenuItem
+        Caption = 'C&reate Database...'
+        OnClick = mnuDbCreateClick
+      end
+      object mnuDbDrop: TMenuItem
+        Caption = 'Dro&p Database...'
+        OnClick = mnuDbDropClick
       end
       object mnuUnregisterDatabase: TMenuItem
         Caption = '&Unregister'
@@ -245,7 +298,7 @@
       Caption = '&Object'
       object mnuObjRefresh: TMenuItem
         Caption = 'Re&fresh'
-        OnClick = mnuNotImplementedClick
+        OnClick = mnuObjRefreshClick
       end
       object mnuScriptAs: TMenuItem
         Caption = '&Script as'
@@ -257,6 +310,10 @@
       object mnuObjProperties: TMenuItem
         Caption = 'P&roperties...'
         OnClick = mnuObjPropertiesClick
+      end
+      object mnuObjBrowseData: TMenuItem
+        Caption = '&Browse Data'
+        OnClick = mnuObjBrowseDataClick
       end
       object mnuObjDdlToEditor: TMenuItem
         Caption = 'Open DDL in SQL &Editor'
@@ -306,9 +363,21 @@
       Caption = '&Connect'
       OnClick = mnuDbConnectClick
     end
+    object popConnectAs: TMenuItem
+      Caption = 'Connect &As...'
+      OnClick = mnuDbConnectAsClick
+    end
     object popDisconnect: TMenuItem
       Caption = '&Disconnect'
       OnClick = mnuDbDisconnectClick
+    end
+    object popServerConnect: TMenuItem
+      Caption = '&Connect'
+      OnClick = mnuServerConnectClick
+    end
+    object popServerDisconnect: TMenuItem
+      Caption = '&Disconnect'
+      OnClick = mnuServerDisconnectClick
     end
     object popSep1: TMenuItem
       Caption = '-'
@@ -331,6 +400,10 @@
     object popProperties: TMenuItem
       Caption = 'P&roperties...'
       OnClick = mnuObjPropertiesClick
+    end
+    object popBrowseData: TMenuItem
+      Caption = '&Browse Data'
+      OnClick = mnuObjBrowseDataClick
     end
     object popDdlToEditor: TMenuItem
       Caption = 'Open DDL in SQL &Editor'
@@ -397,6 +470,10 @@
       Caption = 'Register &Database...'
       OnClick = mnuRegisterDatabaseClick
     end
+    object popCreateDb: TMenuItem
+      Caption = 'C&reate Database...'
+      OnClick = mnuDbCreateClick
+    end
     object popUnregDb: TMenuItem
       Caption = '&Unregister Database'
       OnClick = mnuUnregisterDatabaseClick
@@ -418,7 +495,7 @@
     end
     object popRefresh: TMenuItem
       Caption = 'Re&fresh'
-      OnClick = mnuRefreshClick
+      OnClick = mnuObjRefreshClick
     end
   end
 end

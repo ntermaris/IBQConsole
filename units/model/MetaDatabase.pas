@@ -52,6 +52,10 @@ type
     FSqlProvider: TMetadataSqlProvider;
     FShowSystemObjects: Boolean;
     FContext: TDatabaseContext;
+    FSessionProfile: TConnectionProfile;
+    { Attaches through AProfile, which must outlive the attachment. }
+    procedure AttachWith(AProfile: TConnectionProfile;
+      const APassword: string);
     procedure AddCollection(ACollectionType, AItemType: TMetaNodeType;
       const ASql: string);
     procedure LoadCollectionItems(ACollection: TMetaCollection);
@@ -74,9 +78,59 @@ type
         EIbqUnsupported   - The server is too old, or the database is not SQL
                             dialect 3. }
     procedure Connect(const APassword: string);
+
+    { Attaches as a different user or role than the registration names, for
+      this connection only.
+
+      Parameters:
+        AUserName - The user to attach as.
+        APassword - Their password; never stored.
+        ARole     - The role to assume, or an empty string for none.
+
+      Raises:
+        The same as Connect.
+
+      Notes:
+        The registration is not changed: disconnecting and connecting again
+        goes back to the registered user. }
+    procedure ConnectAs(const AUserName, APassword, ARole: string);
+
     { Detaches and drops everything read from the database. Safe when not
       connected. }
     procedure Disconnect;
+
+    { The user the current attachment was made as - which after Connect As is
+      not the registration's user - or the registered user when not
+      connected. }
+    function ConnectedUserName: string;
+
+    { Creates a new database file on a server, or locally for embedded use.
+
+      Parameters:
+        AProfile            - Where and as whom; its DatabasePath, UserName
+                              and CharacterSet are used. Not owned.
+        AServerRegistration - The server it is created on, which decides the
+                              client library; nil for an embedded database.
+        APassword           - The owner's password; never stored.
+        APageSize           - Bytes per page, or 0 for the server's default.
+
+      Raises:
+        EIbqDatabaseError - The server refused.
+
+      Notes:
+        Creates nothing in the tree. Registering the new file is the
+        caller's decision. }
+    class procedure CreateDatabaseFile(AProfile: TConnectionProfile;
+      AServerRegistration: TServerRegistration; const APassword: string;
+      APageSize: Integer);
+
+    { Deletes this database from the server and leaves the node
+      disconnected.
+
+      Raises:
+        EIbqError         - Not connected.
+        EIbqDatabaseError - The server refused; the node stays connected. }
+    procedure DropDatabase;
 
     { Records that the database is now attached, and with which version.
 
@@ -381,6 +435,7 @@ destructor TMetaDatabase.Destroy;
 begin
   ClearChildren;
   FreeAndNil(FContext);
+  FreeAndNil(FSessionProfile);
   FreeAndNil(FSqlProvider);
   if FOwnsProfile then
     FreeAndNil(FProfile);
@@ -410,8 +465,65 @@ begin
   if IsConnected then
     Exit;
 
+  FreeAndNil(FSessionProfile);
+  AttachWith(FProfile, APassword);
+end;
+
+{------------------------------------------------------------------------------
+  TMetaDatabase.ConnectAs
+  ----------------------------------------------------------------------------
+  Attaches as a different user or role, for this connection only.
+
+  Parameters:
+    AUserName - The user to attach as.
+    APassword - Their password; never stored.
+    ARole     - The role to assume, or an empty string for none.
+
+  Notes:
+    A copy of the registration carries the other credentials, because the
+    context borrows its profile for as long as it is attached. Changing the
+    registration itself would be simpler and wrong: the next save would write
+    a user the administrator only meant to try once into the file.
+------------------------------------------------------------------------------}
+procedure TMetaDatabase.ConnectAs(const AUserName, APassword, ARole: string);
+var
+  Session: TConnectionProfile;
+begin
+  if IsConnected then
+    Exit;
+
+  FreeAndNil(FSessionProfile);
+  Session := FProfile.Clone;
+  Session.UserName := AUserName;
+  Session.Role := ARole;
+  Session.Password := '';
+  FSessionProfile := Session;
+  try
+    AttachWith(FSessionProfile, APassword);
+  except
+    FreeAndNil(FSessionProfile);
+    raise;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  TMetaDatabase.AttachWith
+  ----------------------------------------------------------------------------
+  Creates the context for a profile and attaches it.
+
+  Parameters:
+    AProfile  - The profile to attach with. Borrowed by the context, so it
+                must outlive the attachment.
+    APassword - The password; never stored.
+
+  Raises:
+    The same as Connect. The context is freed again on failure.
+------------------------------------------------------------------------------}
+procedure TMetaDatabase.AttachWith(AProfile: TConnectionProfile;
+  const APassword: string);
+begin
   FreeAndNil(FContext);
-  FContext := TDatabaseContext.Create(FProfile, EffectiveClientLibrary);
+  FContext := TDatabaseContext.Create(AProfile, EffectiveClientLibrary);
   try
     FContext.Connect(APassword);
   except
@@ -430,7 +542,74 @@ end;
 procedure TMetaDatabase.Disconnect;
 begin
   FreeAndNil(FContext);
+  // after the context: it borrows this profile until it is gone
+  FreeAndNil(FSessionProfile);
   MarkDisconnected;
+end;
+
+{------------------------------------------------------------------------------
+  TMetaDatabase.CreateDatabaseFile
+  ----------------------------------------------------------------------------
+  See the interface section for the description.
+
+  Notes:
+    The client library is chosen the same way EffectiveClientLibrary chooses
+    it for a registered database, so the file is created by the very client
+    that will later open it.
+------------------------------------------------------------------------------}
+class procedure TMetaDatabase.CreateDatabaseFile(AProfile: TConnectionProfile;
+  AServerRegistration: TServerRegistration; const APassword: string;
+  APageSize: Integer);
+var
+  Context: TDatabaseContext;
+  ClientLibrary: string;
+begin
+  if (AProfile.Mode <> cmEmbedded) and (AServerRegistration <> nil) then
+    ClientLibrary := AServerRegistration.ClientLibrary
+  else
+    ClientLibrary := AProfile.ClientLibrary;
+
+  Context := TDatabaseContext.Create(AProfile, ClientLibrary);
+  try
+    Context.CreateDatabase(APassword, APageSize);
+  finally
+    Context.Free;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  TMetaDatabase.DropDatabase
+  ----------------------------------------------------------------------------
+  See the interface section for the description.
+
+  Notes:
+    The node is marked disconnected only after the server has agreed. A
+    refused drop - another user still attached, say - leaves everything as it
+    was, which is the only honest state to leave it in.
+------------------------------------------------------------------------------}
+procedure TMetaDatabase.DropDatabase;
+begin
+  if (FContext = nil) or not FContext.IsConnected then
+    raise EIbqError.Create('The database is not connected.');
+
+  FContext.DropDatabase;
+  Disconnect;
+end;
+
+{------------------------------------------------------------------------------
+  TMetaDatabase.ConnectedUserName
+  ----------------------------------------------------------------------------
+  Returns the user the attachment was made as.
+
+  Returns:
+    The Connect As user while one is in use, otherwise the registration's.
+------------------------------------------------------------------------------}
+function TMetaDatabase.ConnectedUserName: string;
+begin
+  if FSessionProfile <> nil then
+    Result := FSessionProfile.UserName
+  else
+    Result := FProfile.UserName;
 end;
 
 {------------------------------------------------------------------------------

@@ -7,7 +7,7 @@
   Created:     2026-08-20
   Depends on:  Classes, SysUtils, IB, IBDatabase, IBSQL, IBExtract, IbqError, AppLog,
                ConnectionProfile, ServerVersion, MetadataSqlProvider,
-               MetadataSqlProviderFactory, DatabaseRow
+               MetadataSqlProviderFactory, DatabaseRow, DdlStatements
 
   This is the ONLY place, together with units/services, where IBX appears.
   Everything above it works with plain records and strings.
@@ -78,6 +78,29 @@ type
     procedure Connect(const APassword: string);
     { Rolls back both transactions and detaches. Safe when not connected. }
     procedure Disconnect;
+
+    { Creates the database the profile describes, then leaves this context
+      disconnected.
+
+      Parameters:
+        APassword - The owner's password. Never stored, and masked in the
+                    statement that is logged.
+        APageSize - Bytes per page, or 0 for the server's default.
+
+      Raises:
+        EIbqError         - The context is already attached.
+        EIbqDatabaseError - The server refused; carries the status vector. }
+    procedure CreateDatabase(const APassword: string; APageSize: Integer);
+
+    { Deletes the attached database from the server and leaves this context
+      disconnected.
+
+      Raises:
+        EIbqError         - Not attached.
+        EIbqDatabaseError - The server refused - typically because another
+                            attachment is still open. The context is then
+                            still attached. }
+    procedure DropDatabase;
     { True while attached. }
     function IsConnected: Boolean;
 
@@ -201,6 +224,9 @@ type
   end;
 
 implementation
+
+uses
+  DdlStatements;
 
 const
   { The only dialect IBQConsole supports. Dialect 1 changes identifier rules,
@@ -400,6 +426,95 @@ begin
   FreeAndNil(FSqlProvider);
   FServerVersion := UnknownServerVersion;
   FSqlDialect := 0;
+end;
+
+{------------------------------------------------------------------------------
+  TDatabaseContext.CreateDatabase
+  ----------------------------------------------------------------------------
+  See the interface section for the description.
+
+  Notes:
+    The statement carries USER and PASSWORD itself, so nothing depends on how
+    IBX maps parameter names onto a create. It goes through this context's
+    own TIBDatabase, which is what makes it load the server's own client
+    library rather than whichever fbclient the loader finds first.
+
+    IBX leaves the new database attached; it is detached straight away. The
+    caller registers it and connects in the usual way, which runs the version
+    and dialect checks that a create skips.
+------------------------------------------------------------------------------}
+procedure TDatabaseContext.CreateDatabase(const APassword: string;
+  APageSize: Integer);
+var
+  Sql: string;
+  LoggedSql: string;
+  Mask: string;
+begin
+  if IsConnected then
+  begin
+    raise EIbqError.Create('A database cannot be created through a ' +
+      'connection that is already attached.');
+  end;
+
+  ConfigureAttachment(APassword);
+  FDatabase.SQLDialect := RequiredSqlDialect;
+
+  Sql := CreateDatabaseStatement(FProfile.ConnectionString,
+    FProfile.UserName, APassword, APageSize, FProfile.CharacterSet);
+  // what the log sees: the same statement, never the password
+  if APassword <> '' then
+    Mask := '********'
+  else
+    Mask := '';
+  LoggedSql := CreateDatabaseStatement(FProfile.ConnectionString,
+    FProfile.UserName, Mask, APageSize, FProfile.CharacterSet);
+
+  try
+    FDatabase.CreateDatabase(Sql);
+  except
+    on E: Exception do
+      raise TranslateError(E, LoggedSql);
+  end;
+  Sql := '';
+
+  Log.InfoFmt('Created database %s', [FProfile.ConnectionString]);
+
+  if FDatabase.Connected then
+    FDatabase.Connected := False;
+end;
+
+{------------------------------------------------------------------------------
+  TDatabaseContext.DropDatabase
+  ----------------------------------------------------------------------------
+  See the interface section for the description.
+
+  Notes:
+    Both standing transactions are rolled back first: Firebird refuses to drop
+    a database while this attachment still has a transaction open on it, and
+    nothing in them is worth keeping once the file is gone.
+------------------------------------------------------------------------------}
+procedure TDatabaseContext.DropDatabase;
+var
+  Where: string;
+begin
+  if not IsConnected then
+    raise EIbqError.Create('The database is not connected.');
+
+  if FDdlTransaction.InTransaction then
+    FDdlTransaction.Rollback;
+  if FMetaTransaction.InTransaction then
+    FMetaTransaction.Rollback;
+
+  Where := FProfile.ConnectionString;
+  try
+    FDatabase.DropDatabase;
+  except
+    on E: Exception do
+      raise TranslateError(E, 'DROP DATABASE');
+  end;
+
+  Log.InfoFmt('Dropped database %s', [Where]);
+  Disconnect;
 end;
 
 {------------------------------------------------------------------------------

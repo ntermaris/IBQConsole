@@ -22,7 +22,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, ComCtrls, ExtCtrls,
-  StdCtrls,
+  StdCtrls, LCLType, LazUTF8,
   LanguageHandle, AppLog, IbqError, MetaItem, MetaTypes, MetaRoot, MetaServer,
   MetaDatabase, MetaCollection, ServerRegistration, ConnectionProfile,
   StatementHistory, ScriptGenerator,
@@ -30,7 +30,7 @@ uses
   frmExecuteRoutine, frmMaintenance, frmUserManager,
   frmTransactionRecovery, frmConnectedUsers, frmImportRegistrations,
   frmDdlPreview, frmObjectEditor, DdlStatements, AppConfig,
-  frmPreferences, frmServerProperties;
+  frmPreferences, frmServerProperties, frmConnectAs, frmCreateDatabase;
 
 type
 
@@ -51,6 +51,7 @@ type
     mnuRefresh: TMenuItem;
     mnuShowSystem: TMenuItem;
     mnuShowLog: TMenuItem;
+    mnuTreeFilter: TMenuItem;
     mnuServer: TMenuItem;
     mnuServerConnect: TMenuItem;
     mnuServerDisconnect: TMenuItem;
@@ -60,7 +61,10 @@ type
     mnuUnregisterServer: TMenuItem;
     mnuDatabase: TMenuItem;
     mnuDbConnect: TMenuItem;
+    mnuDbConnectAs: TMenuItem;
     mnuDbDisconnect: TMenuItem;
+    mnuDbCreate: TMenuItem;
+    mnuDbDrop: TMenuItem;
     mnuUnregisterDatabase: TMenuItem;
     sepDatabase1: TMenuItem;
     mnuMaintenance: TMenuItem;
@@ -77,6 +81,7 @@ type
     mnuObject: TMenuItem;
     mnuObjRefresh: TMenuItem;
     mnuObjProperties: TMenuItem;
+    mnuObjBrowseData: TMenuItem;
     mnuObjDdlToEditor: TMenuItem;
     sepObject1: TMenuItem;
     mnuObjNew: TMenuItem;
@@ -92,13 +97,17 @@ type
     mnuAbout: TMenuItem;
     popTree: TPopupMenu;
     popConnect: TMenuItem;
+    popConnectAs: TMenuItem;
     popDisconnect: TMenuItem;
+    popServerConnect: TMenuItem;
+    popServerDisconnect: TMenuItem;
     popSep1: TMenuItem;
     popNew: TMenuItem;
     popAlter: TMenuItem;
     popDrop: TMenuItem;
     popSep2: TMenuItem;
     popProperties: TMenuItem;
+    popBrowseData: TMenuItem;
     popDdlToEditor: TMenuItem;
     popExecute: TMenuItem;
     popSep3: TMenuItem;
@@ -115,6 +124,7 @@ type
     popExtract: TMenuItem;
     popSep4: TMenuItem;
     popRegisterDb: TMenuItem;
+    popCreateDb: TMenuItem;
     popUnregDb: TMenuItem;
     popUnregSrv: TMenuItem;
     popServerProperties: TMenuItem;
@@ -122,6 +132,9 @@ type
     popSep5: TMenuItem;
     popRefresh: TMenuItem;
 
+    pnlTree: TPanel;
+    pnlTreeFilter: TPanel;
+    edtTreeFilter: TEdit;
     tvObjects: TTreeView;
     splTree: TSplitter;
     pnlLog: TPanel;
@@ -135,24 +148,35 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure mnuExitClick(Sender: TObject);
     procedure mnuShowLogClick(Sender: TObject);
+    procedure mnuTreeFilterClick(Sender: TObject);
+    procedure edtTreeFilterChange(Sender: TObject);
+    procedure edtTreeFilterKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure mnuShowSystemClick(Sender: TObject);
     procedure mnuRefreshClick(Sender: TObject);
     procedure mnuAboutClick(Sender: TObject);
     procedure mnuRegisterServerClick(Sender: TObject);
     procedure mnuUnregisterServerClick(Sender: TObject);
     procedure mnuDbConnectClick(Sender: TObject);
+    procedure mnuDbConnectAsClick(Sender: TObject);
+    procedure mnuDbCreateClick(Sender: TObject);
+    procedure mnuDbDropClick(Sender: TObject);
     procedure mnuDbDisconnectClick(Sender: TObject);
     procedure mnuRegisterDatabaseClick(Sender: TObject);
     procedure mnuUnregisterDatabaseClick(Sender: TObject);
-    procedure mnuNotImplementedClick(Sender: TObject);
+    procedure mnuServerConnectClick(Sender: TObject);
+    procedure mnuServerDisconnectClick(Sender: TObject);
+    procedure mnuObjRefreshClick(Sender: TObject);
     procedure tvObjectsExpanding(Sender: TObject; Node: TTreeNode;
       var AllowExpansion: Boolean);
     procedure tvObjectsSelectionChanged(Sender: TObject);
     procedure tvObjectsDblClick(Sender: TObject);
     procedure mnuObjPropertiesClick(Sender: TObject);
+    procedure mnuObjBrowseDataClick(Sender: TObject);
     procedure mnuNewSqlEditorClick(Sender: TObject);
     procedure mnuExtractMetadataClick(Sender: TObject);
     procedure ScriptAsItemClick(Sender: TObject);
+    procedure ScriptDdlItemClick(Sender: TObject);
     procedure mnuObjExecuteClick(Sender: TObject);
     procedure mnuMaintenanceItemClick(Sender: TObject);
     procedure mnuTransactionRecoveryClick(Sender: TObject);
@@ -170,6 +194,8 @@ type
   private
     FMetaRoot: TMetaRoot;
     FShowSystemObjects: Boolean;
+    { The tree filter, upper-cased; empty when nothing is filtered. }
+    FTreeFilter: string;
     procedure BuildLanguageMenu;
     procedure ApplyPreferences;
     procedure TidySeparators(AItems: TMenuItem);
@@ -180,13 +206,16 @@ type
       const ACaption, AText: string);
     procedure LanguageItemClick(Sender: TObject);
     procedure RebuildTree;
+    function IsFilteredFolder(AItem: TMetaItem): Boolean;
+    function PassesTreeFilter(AParent, AChild: TMetaItem): Boolean;
+    procedure ApplyTreeFilter;
     procedure PopulateNode(ATreeNode: TTreeNode; AItem: TMetaItem);
     function AddTreeNode(AParent: TTreeNode; AItem: TMetaItem): TTreeNode;
     function CanHaveChildren(AItem: TMetaItem): Boolean;
     function SelectedItem: TMetaItem;
     function SelectedServer: TMetaServer;
     function NodeCaption(AItem: TMetaItem): string;
-    procedure OpenObjectPage(AItem: TMetaItem);
+    function OpenObjectPage(AItem: TMetaItem): TfraObjectPage;
     procedure ObjectPageCloseRequest(Sender: TObject);
     function FindObjectPage(AItem: TMetaItem): TTabSheet;
     procedure LogLine(ASeverity: TLogSeverity; const ATimestamp: TDateTime;
@@ -194,6 +223,8 @@ type
     procedure ReportError(E: Exception);
     procedure UpdateStatusBar;
     procedure UpdateMenuState;
+    procedure ShowDatabaseConnected(ANode: TTreeNode);
+    procedure RemoveDatabaseRegistration(ADatabase: TMetaDatabase);
   public
     { Re-reads every caption from the active language. Part of ILocalizable. }
     procedure LoadLangStr;
@@ -342,6 +373,10 @@ begin
   mnuShowSystem.Caption :=
     LangStr('mnuShowSystem.caption', 'Show &System Objects');
   mnuShowLog.Caption := LangStr('mnuShowLog.caption', 'Show &Log');
+  mnuTreeFilter.Caption :=
+    LangStr('mnuTreeFilter.caption', 'Object Tree &Filter');
+  edtTreeFilter.TextHint :=
+    LangStr('tree.filterHint', 'Filter objects by name');
 
   mnuServer.Caption := LangStr('mnuServer.caption', '&Server');
   mnuServerConnect.Caption := LangStr('mnuServerConnect.caption', '&Connect');
@@ -354,7 +389,14 @@ begin
 
   mnuDatabase.Caption := LangStr('mnuDatabase.caption', '&Database');
   mnuDbConnect.Caption := LangStr('mnuDbConnect.caption', '&Connect');
+  mnuDbConnectAs.Caption :=
+    LangStr('mnuDbConnectAs.caption', 'Connect &As...');
+  popConnectAs.Caption := mnuDbConnectAs.Caption;
   mnuDbDisconnect.Caption := LangStr('mnuDbDisconnect.caption', '&Disconnect');
+  mnuDbCreate.Caption :=
+    LangStr('mnuDbCreate.caption', 'C&reate Database...');
+  popCreateDb.Caption := mnuDbCreate.Caption;
+  mnuDbDrop.Caption := LangStr('mnuDbDrop.caption', 'Dro&p Database...');
   mnuUnregisterDatabase.Caption :=
     LangStr('mnuUnregisterDatabase.caption', '&Unregister');
   mnuMaintenance.Caption := LangStr('mnuMaintenance.caption', '&Maintenance');
@@ -375,6 +417,9 @@ begin
 
   mnuObject.Caption := LangStr('mnuObject.caption', '&Object');
   mnuObjRefresh.Caption := LangStr('mnuObjRefresh.caption', 'Re&fresh');
+  mnuObjBrowseData.Caption :=
+    LangStr('mnuObjBrowseData.caption', '&Browse Data');
+  popBrowseData.Caption := mnuObjBrowseData.Caption;
   mnuObjProperties.Caption :=
     LangStr('mnuObjProperties.caption', 'P&roperties...');
   mnuScriptAs.Caption := LangStr('mnuScriptAs.caption', '&Script as');
@@ -428,7 +473,11 @@ begin
   popServerProperties.Caption :=
     LangStr('mnuServerProperties.caption', 'P&roperties...');
   popServerLog.Caption := LangStr('mnuServerLog.caption', 'View &Log...');
-  popRefresh.Caption := LangStr('mnuRefresh.caption', '&Refresh');
+  popRefresh.Caption := LangStr('mnuObjRefresh.caption', 'Re&fresh');
+  popServerConnect.Caption :=
+    LangStr('mnuServerConnect.caption', '&Connect');
+  popServerDisconnect.Caption :=
+    LangStr('mnuServerDisconnect.caption', '&Disconnect');
 
   RebuildTree;
   UpdateStatusBar;
@@ -594,6 +643,8 @@ begin
     Child := AItem.Child[I];
     if Child.IsSystem and not FShowSystemObjects then
       Continue;
+    if not PassesTreeFilter(AItem, Child) then
+      Continue;
     AddTreeNode(ATreeNode, Child);
   end;
 end;
@@ -623,6 +674,157 @@ begin
   end;
 
   UpdateMenuState;
+end;
+
+{------------------------------------------------------------------------------
+  TfrmIbqMain.IsFilteredFolder
+  ----------------------------------------------------------------------------
+  Returns True for a folder whose objects the tree filter applies to.
+
+  Parameters:
+    AItem - The parent whose children are being listed.
+
+  Returns:
+    True for a top-level folder of a database, or of a schema on Firebird 6:
+    Tables, Views, Procedures and the rest.
+
+  Notes:
+    The folders inside an object - a table's columns, its indexes - are left
+    alone. Filtering for CUSTOMER and then finding CUSTOMER's columns hidden
+    because none of them is called CUSTOMER would make the filter useless for
+    the very object it just found.
+------------------------------------------------------------------------------}
+function TfrmIbqMain.IsFilteredFolder(AItem: TMetaItem): Boolean;
+begin
+  Result := (AItem <> nil) and AItem.IsCollection and (AItem.Parent <> nil)
+    and (AItem.Parent.NodeType in [mntDatabase, mntSchema]);
+end;
+
+{------------------------------------------------------------------------------
+  TfrmIbqMain.PassesTreeFilter
+  ----------------------------------------------------------------------------
+  Decides whether one child is shown under the current tree filter.
+
+  Parameters:
+    AParent - The item being listed.
+    AChild  - One of its children.
+
+  Returns:
+    True when there is no filter, when AParent is not a folder the filter
+    applies to, or when AChild's name contains the filter text, ignoring case.
+------------------------------------------------------------------------------}
+function TfrmIbqMain.PassesTreeFilter(AParent, AChild: TMetaItem): Boolean;
+begin
+  if (FTreeFilter = '') or not IsFilteredFolder(AParent) then
+    Exit(True);
+  Result := Pos(FTreeFilter, UTF8UpperCase(AChild.DisplayName)) > 0;
+end;
+
+{------------------------------------------------------------------------------
+  TfrmIbqMain.ApplyTreeFilter
+  ----------------------------------------------------------------------------
+  Re-reads the filter text and re-lists every folder already loaded.
+
+  Notes:
+    Only folders whose contents have been read are re-listed; nothing is
+    fetched from a database here. A folder not yet opened is filtered when it
+    is, because PopulateNode applies the same test. That keeps typing in the
+    filter box free however many databases are connected.
+
+    Re-listing a folder rebuilds its object nodes, so an object that had
+    been expanded under it comes back collapsed. Keeping each node's state
+    across a filter change would cost more than it saves.
+------------------------------------------------------------------------------}
+procedure TfrmIbqMain.ApplyTreeFilter;
+var
+  Node: TTreeNode;
+  Item: TMetaItem;
+begin
+  FTreeFilter := UTF8UpperCase(Trim(edtTreeFilter.Text));
+
+  tvObjects.Items.BeginUpdate;
+  try
+    Node := tvObjects.Items.GetFirstNode;
+    while Node <> nil do
+    begin
+      Item := TMetaItem(Node.Data);
+      if IsFilteredFolder(Item) and (Item.ChildrenState = mlsLoaded) then
+      begin
+        PopulateNode(Node, Item);
+        Node := Node.GetNextSkipChildren;
+      end
+      else
+        Node := Node.GetNext;
+    end;
+  finally
+    tvObjects.Items.EndUpdate;
+  end;
+
+  UpdateMenuState;
+  UpdateStatusBar;
+end;
+
+{------------------------------------------------------------------------------
+  TfrmIbqMain.edtTreeFilterChange
+  ----------------------------------------------------------------------------
+  Applies the filter as it is typed.
+
+  Parameters:
+    Sender - The filter box.
+------------------------------------------------------------------------------}
+procedure TfrmIbqMain.edtTreeFilterChange(Sender: TObject);
+begin
+  ApplyTreeFilter;
+end;
+
+{------------------------------------------------------------------------------
+  TfrmIbqMain.edtTreeFilterKeyDown
+  ----------------------------------------------------------------------------
+  Clears the filter on Escape, and moves to the tree on Down.
+
+  Parameters:
+    Sender - The filter box.
+    Key    - The key; zeroed when handled here.
+    Shift  - Modifier state; not used.
+------------------------------------------------------------------------------}
+procedure TfrmIbqMain.edtTreeFilterKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  case Key of
+    VK_ESCAPE:
+      begin
+        edtTreeFilter.Text := '';
+        Key := 0;
+      end;
+    VK_DOWN:
+      begin
+        tvObjects.SetFocus;
+        Key := 0;
+      end;
+  else
+    // every other key is typing, and belongs to the edit box
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  TfrmIbqMain.mnuTreeFilterClick
+  ----------------------------------------------------------------------------
+  Shows or hides the tree filter box.
+
+  Parameters:
+    Sender - The View > Object Tree Filter menu item.
+
+  Notes:
+    Hiding the box also clears it. A filter nobody can see is a tree that
+    silently leaves things out, which is worse than no filter at all.
+------------------------------------------------------------------------------}
+procedure TfrmIbqMain.mnuTreeFilterClick(Sender: TObject);
+begin
+  pnlTreeFilter.Visible := mnuTreeFilter.Checked;
+  if pnlTreeFilter.Visible then
+    edtTreeFilter.SetFocus
+  else
+    edtTreeFilter.Text := '';
 end;
 
 {------------------------------------------------------------------------------
@@ -711,6 +913,41 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  TfrmIbqMain.mnuObjBrowseDataClick
+  ----------------------------------------------------------------------------
+  Opens the selected table or view on its Data tab.
+
+  Parameters:
+    Sender - The menu item, from either the Object menu or the tree popup.
+
+  Notes:
+    The same page Properties opens, brought up on a different tab, rather than
+    a grid of its own: one object then has one page, and the data is edited
+    through the same TDataEditor and its own transaction whichever way the
+    user arrived.
+------------------------------------------------------------------------------}
+procedure TfrmIbqMain.mnuObjBrowseDataClick(Sender: TObject);
+var
+  Item: TMetaItem;
+  Page: TfraObjectPage;
+begin
+  Item := SelectedItem;
+  if (Item = nil) or not IsBrowsableType(Item.NodeType) or
+    (SelectedDatabase = nil) then
+  begin
+    MessageDlg(Caption,
+      LangStr('msg.browseNeedsRelation',
+        'Select a table or view in a connected database first.'),
+      mtInformation, [mbOK], 0);
+    Exit;
+  end;
+
+  Page := OpenObjectPage(Item);
+  if Page <> nil then
+    Page.ShowDataPage;
+end;
+
+{------------------------------------------------------------------------------
   TfrmIbqMain.SelectedItem
   ----------------------------------------------------------------------------
   Returns the model item behind the selected tree node, or nil.
@@ -775,11 +1012,15 @@ begin
 
   mnuServerProperties.Enabled := SelectedServer <> nil;
   mnuUnregisterServer.Enabled := (Item is TMetaServer);
-  mnuServerConnect.Enabled := SelectedServer <> nil;
+  mnuServerConnect.Enabled :=
+    (SelectedServer <> nil) and not SelectedServer.IsConnected;
   mnuServerDisconnect.Enabled :=
     (SelectedServer <> nil) and SelectedServer.IsConnected;
 
   mnuDbConnect.Enabled := (Database <> nil) and not Database.IsConnected;
+  mnuDbConnectAs.Enabled := mnuDbConnect.Enabled;
+  mnuDbCreate.Enabled := SelectedServer <> nil;
+  mnuDbDrop.Enabled := (Database <> nil) and Database.IsConnected;
   mnuDbDisconnect.Enabled := (Database <> nil) and Database.IsConnected;
   mnuUnregisterDatabase.Enabled := Database <> nil;
 
@@ -790,8 +1031,11 @@ begin
   mnuServerUsers.Enabled := SelectedServer <> nil;
   mnuDbUsers.Enabled := (Database <> nil) and Database.IsConnected;
 
-  mnuObjRefresh.Enabled := Item <> nil;
+  mnuObjRefresh.Enabled := (Item <> nil) and
+    ((not (Item is TMetaDatabase)) or TMetaDatabase(Item).IsConnected);
   mnuObjProperties.Enabled := (Item <> nil) and not Item.IsCollection;
+  mnuObjBrowseData.Enabled := (Item <> nil) and
+    IsBrowsableType(Item.NodeType) and (SelectedDatabase <> nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -974,8 +1218,6 @@ end;
 procedure TfrmIbqMain.mnuUnregisterDatabaseClick(Sender: TObject);
 var
   Database: TMetaDatabase;
-  Server: TMetaServer;
-  Index: Integer;
 begin
   if not (SelectedItem is TMetaDatabase) then
     Exit;
@@ -991,14 +1233,38 @@ begin
     mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
     Exit;
 
-  if Database.IsConnected then
-    Database.Disconnect;
+  RemoveDatabaseRegistration(Database);
+end;
 
-  if Database.Profile.Mode = cmEmbedded then
+{------------------------------------------------------------------------------
+  TfrmIbqMain.RemoveDatabaseRegistration
+  ----------------------------------------------------------------------------
+  Disconnects a database if needed and removes its registration.
+
+  Parameters:
+    ADatabase - The database node. It is freed by the rebuild that follows,
+                so the caller must not use it afterwards.
+
+  Notes:
+    Shared by Unregister and by Drop Database, which removes the registration
+    of a file that no longer exists. Neither asks here; each has already said
+    what it is about to do in its own words.
+------------------------------------------------------------------------------}
+procedure TfrmIbqMain.RemoveDatabaseRegistration(ADatabase: TMetaDatabase);
+var
+  Server: TMetaServer;
+  Index: Integer;
+  DatabaseName: string;
+begin
+  DatabaseName := ADatabase.DisplayName;
+  if ADatabase.IsConnected then
+    ADatabase.Disconnect;
+
+  if ADatabase.Profile.Mode = cmEmbedded then
   begin
     for Index := 0 to FMetaRoot.Store.EmbeddedCount - 1 do
     begin
-      if FMetaRoot.Store.Embedded[Index] = Database.Profile then
+      if FMetaRoot.Store.Embedded[Index] = ADatabase.Profile then
       begin
         FMetaRoot.Store.DeleteEmbedded(Index);
         Break;
@@ -1007,10 +1273,12 @@ begin
   end
   else
   begin
-    Server := SelectedServer;
+    Server := nil;
+    if ADatabase.AncestorOfType(mntServer) is TMetaServer then
+      Server := TMetaServer(ADatabase.AncestorOfType(mntServer));
     if Server = nil then
       Exit;
-    Index := Server.Registration.IndexOfPath(Database.Profile.DatabasePath);
+    Index := Server.Registration.IndexOfPath(ADatabase.Profile.DatabasePath);
     if Index >= 0 then
     begin
       Server.Registration.DeleteDatabase(Index);
@@ -1018,9 +1286,157 @@ begin
     end;
   end;
 
-  Log.InfoFmt('Unregistered database %s', [Database.DisplayName]);
+  Log.InfoFmt('Unregistered database %s', [DatabaseName]);
   FMetaRoot.Invalidate;
   RebuildTree;
+end;
+
+{------------------------------------------------------------------------------
+  TfrmIbqMain.mnuDbCreateClick
+  ----------------------------------------------------------------------------
+  Creates a new database file on the selected server, and registers it when
+  asked to.
+
+  Parameters:
+    Sender - The menu item, from either the Database menu or the tree popup.
+
+  Notes:
+    The new database is registered but not connected. Connecting is one
+    click, and it runs the version and dialect checks a create does not.
+
+    A path that is already registered on the server is not registered a
+    second time. Creating over it would have failed anyway unless the file
+    had gone, in which case the existing registration already points at the
+    new file.
+------------------------------------------------------------------------------}
+procedure TfrmIbqMain.mnuDbCreateClick(Sender: TObject);
+var
+  Server: TMetaServer;
+  Profile: TConnectionProfile;
+  Password: string;
+  PageSize: Integer;
+  RegisterIt: Boolean;
+  Registered: Boolean;
+begin
+  Server := SelectedServer;
+  if Server = nil then
+  begin
+    MessageDlg(Caption,
+      LangStr('msg.createNeedsServer',
+        'Select the server to create the database on first.'),
+      mtInformation, [mbOK], 0);
+    Exit;
+  end;
+
+  Registered := False;
+  Profile := TConnectionProfile.Create;
+  try
+    try
+      Profile.Host := Server.Registration.Host;
+      Profile.Port := Server.Registration.Port;
+      Profile.UserName := Server.Registration.UserName;
+      Profile.CharacterSet := 'UTF8';
+
+      if not CreateDatabaseDialog(Server.DisplayName, Profile, Password,
+        PageSize, RegisterIt) then
+        Exit;
+
+      Screen.Cursor := crHourGlass;
+      try
+        TMetaDatabase.CreateDatabaseFile(Profile, Server.Registration,
+          Password, PageSize);
+      finally
+        Screen.Cursor := crDefault;
+        Password := '';
+      end;
+
+      if RegisterIt and
+        (Server.Registration.IndexOfPath(Profile.DatabasePath) < 0) then
+      begin
+        Server.Registration.AddDatabase(Profile);
+        FMetaRoot.Store.MarkModified;
+        Log.InfoFmt('Registered database %s', [Profile.ConnectionString]);
+        Profile := nil;   // the registration owns it now
+        Registered := True;
+      end;
+    except
+      on E: Exception do
+        ReportError(E);
+    end;
+  finally
+    Profile.Free;
+  end;
+
+  if Registered then
+    RebuildTree;
+end;
+
+{------------------------------------------------------------------------------
+  TfrmIbqMain.mnuDbDropClick
+  ----------------------------------------------------------------------------
+  Deletes the selected database from its server, after a warning, and removes
+  its registration.
+
+  Parameters:
+    Sender - The Database > Drop Database menu item.
+
+  Notes:
+    The database must be connected: Firebird drops a database through an
+    attachment to it. Asking for the connection first also means the user has
+    just typed the password for it, which is a small extra check that they
+    mean this one.
+
+    No is the default button. This deletes a file on the server along with
+    everything in it, and a reflexive Enter must not be enough.
+
+    Not offered in the tree's right-click menu, on purpose: that menu is used
+    at speed, and this is not a command anyone should reach by accident.
+------------------------------------------------------------------------------}
+procedure TfrmIbqMain.mnuDbDropClick(Sender: TObject);
+var
+  Database: TMetaDatabase;
+begin
+  if not (SelectedItem is TMetaDatabase) then
+    Exit;
+
+  Database := TMetaDatabase(SelectedItem);
+  if not Database.IsConnected then
+  begin
+    MessageDlg(Caption,
+      LangStr('msg.dropNeedsConnection',
+        'Connect to the database first. Firebird drops a database through ' +
+        'a connection to it.'),
+      mtInformation, [mbOK], 0);
+    Exit;
+  end;
+
+  if MessageDlg(Caption,
+    LangStrFormat('msg.confirmDropDatabase',
+      [Database.DisplayName, Database.Profile.DatabasePath],
+      'Delete the database "%s" from the server?' + LineEnding +
+      LineEnding +
+      'The file %s is deleted, with every table and all of its data. ' +
+      'This cannot be undone.' + LineEnding + LineEnding +
+      'Its registration is removed as well.'),
+    mtWarning, [mbYes, mbNo], 0, mbNo) <> mrYes then
+    Exit;
+
+  Screen.Cursor := crHourGlass;
+  try
+    try
+      Database.DropDatabase;
+    except
+      on E: Exception do
+      begin
+        ReportError(E);
+        Exit;
+      end;
+    end;
+  finally
+    Screen.Cursor := crDefault;
+  end;
+
+  RemoveDatabaseRegistration(Database);
 end;
 
 {------------------------------------------------------------------------------
@@ -1073,12 +1489,82 @@ begin
     Password := '';
   end;
 
-  // the node can have children now, so it needs its expander back
-  if Node <> nil then
+  ShowDatabaseConnected(Node);
+end;
+
+{------------------------------------------------------------------------------
+  TfrmIbqMain.mnuDbConnectAsClick
+  ----------------------------------------------------------------------------
+  Connects the selected database as a user or role other than the registered
+  one.
+
+  Parameters:
+    Sender - The menu item, from either the Database menu or the tree popup.
+
+  Notes:
+    The registration's user and role are offered as the starting point,
+    since the common case is the same user with a different role. What is
+    entered lasts for this connection only; see TMetaDatabase.ConnectAs.
+------------------------------------------------------------------------------}
+procedure TfrmIbqMain.mnuDbConnectAsClick(Sender: TObject);
+var
+  Database: TMetaDatabase;
+  UserName: string;
+  Role: string;
+  Password: string;
+  Node: TTreeNode;
+begin
+  if not (SelectedItem is TMetaDatabase) then
+    Exit;
+
+  Database := TMetaDatabase(SelectedItem);
+  if Database.IsConnected then
+    Exit;
+
+  UserName := Database.Profile.UserName;
+  Role := Database.Profile.Role;
+  if not ConnectAsDialog(Database.DisplayName, UserName, Role, Password) then
+    Exit;
+
+  Node := tvObjects.Selected;
+  Screen.Cursor := crHourGlass;
+  try
+    try
+      Database.ConnectAs(UserName, Password, Role);
+    except
+      on E: Exception do
+      begin
+        ReportError(E);
+        Exit;
+      end;
+    end;
+  finally
+    Screen.Cursor := crDefault;
+    Password := '';
+  end;
+
+  ShowDatabaseConnected(Node);
+end;
+
+{------------------------------------------------------------------------------
+  TfrmIbqMain.ShowDatabaseConnected
+  ----------------------------------------------------------------------------
+  Gives a freshly connected database's node its expander back and opens it.
+
+  Parameters:
+    ANode - The database's tree node, or nil.
+
+  Notes:
+    A disconnected database node has no children and so no expander; the
+    placeholder is what lets tvObjectsExpanding load the folders.
+------------------------------------------------------------------------------}
+procedure TfrmIbqMain.ShowDatabaseConnected(ANode: TTreeNode);
+begin
+  if ANode <> nil then
   begin
-    Node.DeleteChildren;
-    tvObjects.Items.AddChild(Node, PlaceholderCaption);
-    Node.Expand(False);
+    ANode.DeleteChildren;
+    tvObjects.Items.AddChild(ANode, PlaceholderCaption);
+    ANode.Expand(False);
   end;
 
   UpdateMenuState;
@@ -1110,6 +1596,174 @@ begin
     Node.Collapse(True);
     Node.DeleteChildren;
   end;
+
+  UpdateMenuState;
+  UpdateStatusBar;
+end;
+
+{------------------------------------------------------------------------------
+  TfrmIbqMain.mnuServerConnectClick
+  ----------------------------------------------------------------------------
+  Logs in to the selected server's Services Manager.
+
+  Parameters:
+    Sender - The menu item, from either the Server menu or the tree popup.
+
+  Notes:
+    The password is used for the login and then dropped, as in every other
+    server command. What the user gains is the server's version in the status
+    bar and a check that the registration's host, port, user and password are
+    right - without having to open a database to find out.
+------------------------------------------------------------------------------}
+procedure TfrmIbqMain.mnuServerConnectClick(Sender: TObject);
+var
+  Server: TMetaServer;
+  Password: string;
+begin
+  Server := SelectedServer;
+  if (Server = nil) or Server.IsConnected then
+    Exit;
+
+  Password := PasswordBox(
+    LangStr('frmMain.caption', 'IBQConsole'),
+    LangStrFormat('msg.passwordPrompt',
+      [Server.Registration.UserName, Server.Registration.TreeCaption],
+      'Password for %s on %s:'));
+  if Password = '' then
+    Exit;
+
+  Screen.Cursor := crHourGlass;
+  try
+    try
+      Server.Connect(Password);
+      Log.InfoFmt('Connected to server %s: %s',
+        [Server.DisplayName, Server.VersionText]);
+    except
+      on E: Exception do
+        ReportError(E);
+    end;
+  finally
+    Screen.Cursor := crDefault;
+    Password := '';
+  end;
+
+  UpdateMenuState;
+  UpdateStatusBar;
+end;
+
+{------------------------------------------------------------------------------
+  TfrmIbqMain.mnuServerDisconnectClick
+  ----------------------------------------------------------------------------
+  Disconnects the selected server and every database connected under it.
+
+  Parameters:
+    Sender - The menu item, from either the Server menu or the tree popup.
+
+  Notes:
+    The database nodes stay in the tree - they are registrations - but each
+    one that was disconnected is collapsed and emptied, exactly as Database >
+    Disconnect leaves it, so no node is left pointing at contents the model
+    has just freed.
+------------------------------------------------------------------------------}
+procedure TfrmIbqMain.mnuServerDisconnectClick(Sender: TObject);
+var
+  Server: TMetaServer;
+  ServerNode: TTreeNode;
+  DatabaseNode: TTreeNode;
+  I: Integer;
+begin
+  Server := SelectedServer;
+  if (Server = nil) or not Server.IsConnected then
+    Exit;
+
+  ServerNode := tvObjects.Selected;
+  while (ServerNode <> nil) and (ServerNode.Data <> Pointer(Server)) do
+    ServerNode := ServerNode.Parent;
+
+  { Before the model frees anything: a selected object under one of these
+    databases would otherwise stay selected after its item was gone. }
+  if ServerNode <> nil then
+    ServerNode.Selected := True;
+
+  Server.Disconnect;
+  Log.InfoFmt('Disconnected from server %s', [Server.DisplayName]);
+
+  if ServerNode <> nil then
+  begin
+    tvObjects.Items.BeginUpdate;
+    try
+      for I := 0 to ServerNode.Count - 1 do
+      begin
+        DatabaseNode := ServerNode.Items[I];
+        if TObject(DatabaseNode.Data) is TMetaDatabase then
+        begin
+          DatabaseNode.Collapse(True);
+          DatabaseNode.DeleteChildren;
+        end;
+      end;
+    finally
+      tvObjects.Items.EndUpdate;
+    end;
+  end;
+
+  UpdateMenuState;
+  UpdateStatusBar;
+end;
+
+{------------------------------------------------------------------------------
+  TfrmIbqMain.mnuObjRefreshClick
+  ----------------------------------------------------------------------------
+  Re-reads the selected branch from the database, leaving the rest of the tree
+  as it is.
+
+  Parameters:
+    Sender - The menu item, from either the Object menu or the tree popup.
+
+  Notes:
+    The branch's tree nodes are deleted BEFORE the model is invalidated,
+    because they point at the very items Invalidate frees. A property page
+    open on one of those items closes itself through its observer, and one
+    open on the refreshed item itself re-reads it.
+
+    A server is repopulated but never invalidated: its children are the
+    registered databases, and invalidating would free - and so disconnect -
+    every open database under it, which is not what "refresh" promises.
+
+    The branch is re-expanded only when it was open before, so refreshing a
+    collapsed folder costs nothing until the user looks inside it.
+------------------------------------------------------------------------------}
+procedure TfrmIbqMain.mnuObjRefreshClick(Sender: TObject);
+var
+  Item: TMetaItem;
+  Node: TTreeNode;
+  WasExpanded: Boolean;
+begin
+  Item := SelectedItem;
+  Node := tvObjects.Selected;
+  if (Item = nil) or (Node = nil) then
+    Exit;
+  if (Item is TMetaDatabase) and not TMetaDatabase(Item).IsConnected then
+    Exit;
+
+  WasExpanded := Node.Expanded;
+
+  tvObjects.Items.BeginUpdate;
+  try
+    Node.Collapse(True);
+    Node.DeleteChildren;
+    if not (Item is TMetaServer) then
+      Item.Invalidate;
+    if CanHaveChildren(Item) then
+      tvObjects.Items.AddChild(Node, PlaceholderCaption);
+  finally
+    tvObjects.Items.EndUpdate;
+  end;
+
+  Log.InfoFmt('Refreshed %s', [NodeCaption(Item)]);
+
+  // loads through tvObjectsExpanding, which reports any failure itself
+  if WasExpanded then
+    Node.Expand(False);
 
   UpdateMenuState;
   UpdateStatusBar;
@@ -1228,6 +1882,7 @@ end;
 procedure TfrmIbqMain.BuildScriptAsMenu;
 var
   Kind: TScriptKind;
+  DdlKind: TDdlScriptKind;
   Item: TMenuItem;
 begin
   mnuScriptAs.Clear;
@@ -1237,6 +1892,19 @@ begin
     Item.Caption := ScriptKindCaption(Kind);
     Item.Tag := Ord(Kind);
     Item.OnClick := @ScriptAsItemClick;
+    mnuScriptAs.Add(Item);
+  end;
+
+  { The definition statements follow the data ones, after a separator: they
+    come from a different source - the object's stored definition rather than
+    its column list - and apply to far more kinds of object. }
+  mnuScriptAs.AddSeparator;
+  for DdlKind := Low(TDdlScriptKind) to High(TDdlScriptKind) do
+  begin
+    Item := TMenuItem.Create(Self);
+    Item.Caption := DdlScriptKindCaption(DdlKind);
+    Item.Tag := Ord(DdlKind);
+    Item.OnClick := @ScriptDdlItemClick;
     mnuScriptAs.Add(Item);
   end;
 end;
@@ -1300,6 +1968,98 @@ begin
 
   OpenSqlEditorWith(Database,
     ScriptKindCaption(Kind) + ' - ' + Item.DisplayName, Sql);
+end;
+
+{------------------------------------------------------------------------------
+  TfrmIbqMain.ScriptDdlItemClick
+  ----------------------------------------------------------------------------
+  Generates the selected object's CREATE, ALTER or DROP statement into a new
+  editor tab, unexecuted.
+
+  Parameters:
+    Sender - The Script as item; its Tag is the TDdlScriptKind ordinal.
+
+  Notes:
+    Nothing runs from here. A generated DROP in particular belongs in an
+    editor, to be read before it is sent; Object > Drop is the command that
+    executes one, behind its own confirmation.
+
+    ALTER is the CREATE rewritten to CREATE OR ALTER, which exists only for
+    the kinds whose definition is a program or a message. A table or a domain
+    is altered clause by clause, which is what Object > Alter is for, so for
+    those the command says it does not apply rather than inventing a script.
+
+    A system object is refused for DROP here for the same reason Object >
+    Drop refuses it: Firebird would reject it, and offering the text suggests
+    otherwise.
+------------------------------------------------------------------------------}
+procedure TfrmIbqMain.ScriptDdlItemClick(Sender: TObject);
+var
+  Database: TMetaDatabase;
+  Item: TMetaItem;
+  Kind: TDdlScriptKind;
+  Sql: string;
+begin
+  if not (Sender is TMenuItem) then
+    Exit;
+
+  Item := SelectedItem;
+  Database := SelectedDatabase;
+  if (Item = nil) or (Database = nil) or Item.IsCollection or
+    (Item is TMetaDatabase) then
+  begin
+    MessageDlg(Caption,
+      LangStr('msg.scriptNeedsObject',
+        'Select an object in a connected database first.'),
+      mtInformation, [mbOK], 0);
+    Exit;
+  end;
+
+  Kind := TDdlScriptKind(TMenuItem(Sender).Tag);
+  Sql := '';
+
+  Screen.Cursor := crHourGlass;
+  try
+    try
+      case Kind of
+        dskCreate:
+          Sql := Database.FetchObjectDdl(Item.NodeType, Item.Ident.AsString);
+        dskAlter:
+          if CanScriptAlter(Item.NodeType) then
+            Sql := CreateOrAlterScript(Item.NodeType,
+              Database.FetchObjectDdl(Item.NodeType, Item.Ident.AsString));
+        dskDrop:
+          if not Item.IsSystem then
+            Sql := DropStatement(Item.NodeType, Item.Ident);
+      else
+        Sql := '';
+      end;
+    except
+      on E: Exception do
+      begin
+        ReportError(E);
+        Exit;
+      end;
+    end;
+  finally
+    Screen.Cursor := crDefault;
+  end;
+
+  if Trim(Sql) = '' then
+  begin
+    MessageDlg(Caption,
+      LangStrFormat('msg.scriptNotApplicable',
+        [DdlScriptKindCaption(Kind), Item.DisplayName],
+        '%s cannot be generated for "%s".'),
+      mtInformation, [mbOK], 0);
+    Exit;
+  end;
+
+  if Kind = dskDrop then
+    Sql := Sql + ';';
+
+  OpenSqlEditorWith(Database,
+    DdlScriptKindCaption(Kind) + ' - ' + Item.DisplayName, Sql);
 end;
 
 {------------------------------------------------------------------------------
@@ -1951,8 +2711,13 @@ begin
 
   popConnect.Visible := (Item is TMetaDatabase) and
     not TMetaDatabase(Item).IsConnected;
+  popConnectAs.Visible := popConnect.Visible;
   popDisconnect.Visible := (Item is TMetaDatabase) and
     TMetaDatabase(Item).IsConnected;
+  popServerConnect.Visible := (Item is TMetaServer) and
+    not TMetaServer(Item).IsConnected;
+  popServerDisconnect.Visible := (Item is TMetaServer) and
+    TMetaServer(Item).IsConnected;
 
   popNew.Visible := Connected and (Item <> nil) and
     CanCreateHere(Item.NodeType);
@@ -1960,6 +2725,8 @@ begin
   popDrop.Visible := Connected and IsObject and CanDrop(Item.NodeType);
 
   popProperties.Visible := Connected and IsObject;
+  popBrowseData.Visible := Connected and IsObject and
+    IsBrowsableType(Item.NodeType);
   popDdlToEditor.Visible := Connected and IsObject;
   popExecute.Visible := Connected and IsObject and
     (Item.NodeType in [mntProcedure, mntFunctionSQL, mntUDF]);
@@ -1978,6 +2745,7 @@ begin
   end;
 
   popRegisterDb.Visible := OnServer;
+  popCreateDb.Visible := Item is TMetaServer;
   popServerProperties.Visible := Item is TMetaServer;
   popServerLog.Visible := OnServer;
   popUnregDb.Visible := Item is TMetaDatabase;
@@ -2276,16 +3044,21 @@ end;
   Parameters:
     AItem - The object to show. Folders and unconnected databases are ignored.
 
+  Returns:
+    The page now showing AItem, or nil when nothing was opened.
+
   Notes:
     An object already open is brought forward rather than opened twice. Two
     tabs for one table would each observe it and each rebuild on every change,
     and the user would have no way to tell them apart.
 ------------------------------------------------------------------------------}
-procedure TfrmIbqMain.OpenObjectPage(AItem: TMetaItem);
+function TfrmIbqMain.OpenObjectPage(AItem: TMetaItem): TfraObjectPage;
 var
   Sheet: TTabSheet;
   Page: TfraObjectPage;
+  I: Integer;
 begin
+  Result := nil;
   if (AItem = nil) or AItem.IsCollection then
     Exit;
   if AItem.NodeType in [mntRoot, mntServer] then
@@ -2295,6 +3068,11 @@ begin
   if Sheet <> nil then
   begin
     pgcWorkspace.ActivePage := Sheet;
+    for I := 0 to Sheet.ControlCount - 1 do
+    begin
+      if Sheet.Controls[I] is TfraObjectPage then
+        Exit(TfraObjectPage(Sheet.Controls[I]));
+    end;
     Exit;
   end;
 
@@ -2319,6 +3097,7 @@ begin
     end;
 
     pgcWorkspace.ActivePage := Sheet;
+    Result := Page;
   finally
     Screen.Cursor := crDefault;
   end;
@@ -2417,6 +3196,7 @@ end;
 procedure TfrmIbqMain.UpdateStatusBar;
 var
   Database: TMetaDatabase;
+  Server: TMetaServer;
 begin
   { The database the selection is UNDER, not only a selected database node.
     Selecting a table inside a connected database used to report 'Not
@@ -2430,7 +3210,7 @@ begin
     if Database.IsConnected then
     begin
       stbMain.Panels[0].Text := Database.Profile.ConnectionString;
-      stbMain.Panels[1].Text := Database.Profile.UserName;
+      stbMain.Panels[1].Text := Database.ConnectedUserName;
       stbMain.Panels[2].Text := Database.Version.DisplayText;
     end
     else
@@ -2440,6 +3220,19 @@ begin
         LangStr('status.notConnected', 'Not connected');
       stbMain.Panels[2].Text := '';
     end;
+  end
+  else if SelectedServer <> nil then
+  begin
+    { A server on its own: what it is, and - once Server > Connect has
+      reached it - the version it reported. }
+    Server := SelectedServer;
+    stbMain.Panels[0].Text := Server.Registration.TreeCaption;
+    stbMain.Panels[1].Text := Server.Registration.UserName;
+    if Server.IsConnected then
+      stbMain.Panels[2].Text := Server.VersionText
+    else
+      stbMain.Panels[2].Text :=
+        LangStr('status.notConnected', 'Not connected');
   end
   else
   begin
@@ -2518,32 +3311,7 @@ begin
   MessageDlg(LangStr('about.title', 'About IBQConsole'),
     LangStr('about.text',
       'IBQConsole' + LineEnding +
-      'A Firebird database editor.' + LineEnding + LineEnding +
-      'Milestone M1 - registrations and object tree.'),
-    mtInformation, [mbOK], 0);
-end;
-
-{------------------------------------------------------------------------------
-  TfrmIbqMain.mnuNotImplementedClick
-  ----------------------------------------------------------------------------
-  Placeholder handler for the commands that arrive in later milestones.
-
-  Parameters:
-    Sender - The menu item that was clicked; its caption names the command.
-------------------------------------------------------------------------------}
-procedure TfrmIbqMain.mnuNotImplementedClick(Sender: TObject);
-var
-  CommandName: string;
-begin
-  if Sender is TMenuItem then
-    CommandName := StringReplace(TMenuItem(Sender).Caption, '&', '',
-      [rfReplaceAll])
-  else
-    CommandName := '';
-
-  MessageDlg(LangStr('frmMain.caption', 'IBQConsole'),
-    LangStrFormat('msg.notImplemented', [CommandName],
-      '%s is not available yet in this build.'),
+      'A Firebird database editor.'),
     mtInformation, [mbOK], 0);
 end;
 

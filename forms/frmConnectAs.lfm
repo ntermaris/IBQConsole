@@ -1,0 +1,98 @@
+object frmIbqConnectAs: TfrmIbqConnectAs
+  Left = 380
+  Height = 228
+  Top = 200
+  Width = 440
+  BorderStyle = bsDialog
+  Caption = 'Connect As'
+  ClientHeight = 228
+  ClientWidth = 440
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poMainFormCenter
+  LCLVersion = '3.0.0.0'
+  object lblDatabase: TLabel
+    Left = 24
+    Height = 15
+    Top = 16
+    Width = 392
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = False
+    Caption = '-'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object lblUser: TLabel
+    Left = 24
+    Height = 15
+    Top = 56
+    Width = 110
+    Caption = 'User name'
+    ParentColor = False
+  end
+  object edtUser: TEdit
+    Left = 150
+    Height = 23
+    Top = 52
+    Width = 266
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 0
+  end
+  object lblPassword: TLabel
+    Left = 24
+    Height = 15
+    Top = 92
+    Width = 110
+    Caption = 'Password'
+    ParentColor = False
+  end
+  object edtPassword: TEdit
+    Left = 150
+    Height = 23
+    Top = 88
+    Width = 266
+    Anchors = [akTop, akLeft, akRight]
+    EchoMode = emPassword
+    PasswordChar = '*'
+    TabOrder = 1
+  end
+  object lblRole: TLabel
+    Left = 24
+    Height = 15
+    Top = 128
+    Width = 110
+    Caption = 'Role'
+    ParentColor = False
+  end
+  object edtRole: TEdit
+    Left = 150
+    Height = 23
+    Top = 124
+    Width = 266
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 2
+  end
+  object btnOK: TButton
+    Left = 234
+    Height = 27
+    Top = 180
+    Width = 88
+    Anchors = [akRight, akBottom]
+    Caption = 'OK'
+    Default = True
+    OnClick = btnOKClick
+    TabOrder = 3
+  end
+  object btnCancel: TButton
+    Left = 330
+    Height = 27
+    Top = 180
+    Width = 88
+    Anchors = [akRight, akBottom]
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 4
+  end
+end

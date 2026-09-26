@@ -88,6 +88,9 @@ type
         AItem - The object to display. Must belong to a connected database. }
     procedure ShowItem(AItem: TMetaItem);
 
+    { Brings the Data tab forward. Returns False when the object has none. }
+    function ShowDataPage: Boolean;
+
     { Re-reads every caption from the active language. Part of ILocalizable. }
     procedure LoadLangStr;
 
@@ -390,6 +393,22 @@ begin
 
   tabData.Caption := LangStr('tab.data', 'Data');
   tabData.TabVisible := True;
+end;
+
+{------------------------------------------------------------------------------
+  TfraObjectPage.ShowDataPage
+  ----------------------------------------------------------------------------
+  Brings the Data tab forward.
+
+  Returns:
+    True when the tab is shown, False when the object is not something whose
+    rows can be browsed - a procedure, an index - and so has no Data tab.
+------------------------------------------------------------------------------}
+function TfraObjectPage.ShowDataPage: Boolean;
+begin
+  Result := tabData.TabVisible;
+  if Result then
+    pgcTabs.ActivePage := tabData;
 end;
 
 {------------------------------------------------------------------------------
